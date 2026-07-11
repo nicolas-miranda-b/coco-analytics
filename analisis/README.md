@@ -35,7 +35,9 @@ y guarda las figuras en `figuras/`.
 | `precios_internacionales.csv` | Precio internacional (USD/t) por período | TM Duché, ICC, Banco Mundial |
 | `empresas_exportadoras.csv` | Principales empresas exportadoras/procesadoras | Tendata, Mordor |
 | `filipinas_destinos_2024.csv` | Destinos de exportación de Filipinas | PCA |
-| `importaciones_bolivia_origen.csv` | Origen de importaciones de Bolivia (datos espejo) | OEC (reporters Ecuador/Brasil) |
+| `importaciones_bolivia_origen.csv` | Origen de importaciones de Bolivia (datos espejo + cotas superiores) | OEC (reporters Ecuador/Brasil/Perú/Chile) |
+| `empresas_importadoras_bolivia.csv` | Importadores bolivianos registrados en aduana (HS 1513) | Volza |
+| `fuentes_oficiales_bolivia.csv` | Directorio de fuentes oficiales (INE COMEX, IBCE, etc.) con URLs y tipo de acceso | Verificación propia |
 | `competencia_marcas_bolivia.csv` | Marcas/competidores en Bolivia | Relevamiento web |
 | `precios_bolivia.csv` | Precios de retail en Bolivia | Selina Wamucii, CaliFrut, listados |
 | `marco_legal_costos.csv` | Requisitos y costos legales (SENASAG, IBNORCA, aranceles) | SENASAG, IBNORCA, AAI-2026 |
@@ -45,5 +47,13 @@ y guarda las figuras en `figuras/`.
 Bolivia es un actor muy pequeño en el comercio mundial de aceite de coco; sus
 cifras de importación no se publican de forma limpia en los agregadores. Los
 números de Bolivia son **direccionales** (datos espejo + relevamiento de retail),
-no auditados. Para una serie exacta conviene comprar/pulir los datos NANDINA
-1513.11 / 1513.19 por año y origen en INE/IBCE/Aduana o en Veritrade/Nosis.
+no auditados.
+
+**La serie oficial existe y es gratuita** en el sistema COMEX del INE
+(`http://web3.ine.gob.bo:8082/comex/Main`, partidas NANDINA 1513.11.00 /
+1513.19.00), pero requiere consulta manual — el entorno donde se generó este
+análisis no puede acceder a ella por restricciones de red. La **§3.5 del
+notebook** trae la receta paso a paso; al guardar el resultado como
+`data/raw/ine_comex_1513.csv`, la celda de esa sección genera automáticamente
+la serie oficial. Directorio completo de fuentes en
+`datos/fuentes_oficiales_bolivia.csv`.

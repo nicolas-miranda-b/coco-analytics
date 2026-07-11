@@ -1,3 +1,7 @@
-origen,valor_usd,periodo,tipo_dato,fuente,confianza
-Ecuador,765000,2023,espejo (Ecuador declara exportacion a Bolivia),OEC (Ecuador reporter),media
-Brasil,24400,dic-2024,espejo (un solo mes),OEC (Brazil reporter),baja
+origen,valor_usd,periodo,tipo_dato,fuente,confianza,nota
+Ecuador,765000,2023,espejo (Ecuador declara exportacion a Bolivia),OEC (Ecuador reporter),media,Bolivia = 5to destino de Ecuador (~13% de sus exportaciones 1513); puede incluir aceite de palmiste
+Ecuador,59800,dic-2021,espejo (un solo mes; +582% interanual),OEC (Ecuador reporter),baja,Punto mensual; muestra crecimiento del flujo
+Brasil,24400,dic-2024,espejo (un solo mes),OEC (Brazil reporter),baja,Bolivia 5to destino de Brasil ese mes
+Brasil,249000,2023,cota superior (Bolivia fuera del top-5 de Brasil),OEC (Brazil reporter),baja,Valor anual < US$249k (el 5to destino fue Alemania con ese monto)
+Peru,678000,2022,cota superior (Bolivia fuera del top-5 de Peru),OEC (Peru reporter),baja,Valor anual < US$678k
+Chile,0,2024,~0 (exportaciones de Chile casi nulas),OEC (Chile reporter),media,Chile no es proveedor de Bolivia
