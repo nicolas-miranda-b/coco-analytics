@@ -6,13 +6,21 @@ Repositorio del emprendimiento de aceite de coco. Por ahora concentra el **anál
 
 ```
 coco-analytics/
-├── notebooks/        # Notebooks de análisis (mercado, costos, proveedores, etc.)
+├── analisis/         # Estudios de análisis (notebooks + datos curados + figuras + resúmenes)
+│   ├── 00_resumen_ejecutivo.md
+│   ├── 01_analisis_competencia_aceite_coco.ipynb
+│   ├── datos/        # CSV curados con su fuente (versionados)
+│   └── figuras/      # Gráficos exportados (PNG)
 ├── data/
 │   ├── raw/          # Datos crudos (no se versionan)
 │   └── processed/    # Datos procesados (no se versionan)
-├── src/              # Código reutilizable (funciones de carga, limpieza, gráficos)
+├── src/              # Código reutilizable (estilo de gráficos, funciones de carga)
 └── requirements.txt  # Dependencias de Python
 ```
+
+> Nota: los datasets *curados* del análisis (pequeños, con fuente documentada) se
+> versionan dentro de `analisis/datos/` para que cada estudio sea reproducible.
+> Las descargas crudas y voluminosas siguen yendo a `data/` (fuera de git).
 
 ## Setup
 
@@ -30,6 +38,7 @@ pip install -r requirements.txt
 
 ## Roadmap
 
+- [x] Análisis de competencia e importaciones (aceite de coco en Bolivia) → [`analisis/`](analisis/)
 - [ ] Análisis de mercado y demanda
 - [ ] Costos de producción y punto de equilibrio
 - [ ] Proveedores y materia prima
