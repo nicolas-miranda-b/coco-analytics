@@ -2,13 +2,13 @@
 
 *Julio 2026 · coco-analytics · Documento de acompañamiento del notebook `01_analisis_competencia_aceite_coco.ipynb`*
 
-> ⚠️ **Calidad de datos.** Bolivia es un actor muy pequeño en el comercio mundial de aceite de coco, así que sus cifras de importación no se publican de forma limpia. Los números de Bolivia provienen de *datos espejo* (lo que los países exportadores declaran haber enviado a Bolivia) y de relevamiento de precios/marcas en retail. Son **direccionales, no auditados**. Cada dato lleva su fuente en `datos/*.csv`.
+> ✅ **Calidad de datos.** Las cifras de importación de Bolivia provienen del **microdato oficial del INE** (registros aduaneros 2015–2026, partidas NANDINA de coco), aportado desde el Drive del proyecto (Cocoil → 11_Tamanio_de_mercado → Importaciones). Marcas y precios de retail son relevamiento web (direccionales). Cada dato lleva su fuente en `datos/*.csv`.
 
 ---
 
 ## 1. En una frase
 
-El aceite de coco en Bolivia es un **producto premium de nicho** (virgen/extra virgen, salud y belleza), con un mercado pequeño (~US$ 0,8–1,5 M/año importados), donde la competencia son sobre todo **pequeños productores locales** y algo de importación regional vía **Ecuador** — con una **barrera legal de entrada baja** y una **ventana arancelaria (DS 5516)** para importar equipo con 0 % este 2026.
+El aceite de coco en Bolivia es un **producto premium de nicho** (importa **US$ 150–300 mil CIF y 40–100 t/año**, con volumen en crecimiento y récord de ~104 t en 2025), que llega **de Asia y de hubs europeos** — la competencia son pequeños jugadores locales e importadores directos como DREAMCO — con una **barrera legal de entrada baja** y una **ventana arancelaria (DS 5516)** para importar equipo con 0 % este 2026.
 
 ## 2. Contexto global — de dónde viene y cuánto vale
 
@@ -19,14 +19,16 @@ El aceite de coco en Bolivia es un **producto premium de nicho** (virgen/extra v
 
 ## 3. Bolivia — el mercado y la competencia
 
-| Dimensión | Hallazgo |
+| Dimensión | Hallazgo (microdato oficial INE) |
 |---|---|
-| Tamaño | Nicho: ~US$ 0,8–1,5 M/año importados; no aparece en rankings de OEC. |
-| Origen importado | **Ecuador** dominante (~US$ 765k en 2023, 5º destino de Ecuador, flujo creciente); Brasil **< US$ 249k/año**, Perú **< US$ 678k/año** (cotas), Chile ~0. ⚠️ Parte del flujo 1513 puede ser **palmiste**, no coco. |
+| Tamaño | Nicho: **US$ 150–300 mil CIF y 40–100 t/año** recientes; pico atípico 2023 (US$ 977 mil). **Volumen creciendo**: récord ~104 t en 2025. Refinado = ~88 %. |
+| Origen importado | **Sri Lanka** (volumen, ~$1,6–2,8/kg), **Malasia** (premium ~$44/kg, explicó el pico 2023), **Países Bajos/Alemania** (re-export UE). **Ecuador ≈ US$ 16**: el dato espejo de $765k era palmiste, no coco. |
+| Dónde está el mercado | **Santa Cruz ~63 %**, Cochabamba ~27 %, La Paz ~8 % del valor importado. |
 | Importadores directos | **DREAMCO SRL** (~25 % de los envíos), **ANTORVA S.R.L** (~11 %), **HANSA LTDA** (~9 %) — registros aduaneros vía Volza. |
 | Competencia | Marcas **locales/artesanales**: Becoco, Madre Tierra, Dream Cos, Viasana. 💡 DREAMCO SRL ≈ marca "Dream Cos": el principal competidor "local" probablemente **importa**, no produce → el posicionamiento "coco boliviano" está **vacante**. |
+| Materia prima | Bolivia importa **más cocos secos (US$ 4,9 M acum.) que aceite (US$ 2,3 M)** — de Indonesia/Malasia/Vietnam. Hasta el insumo es importado. |
 | Canal | Tiendas naturales, e-commerce, redes. Supermercados (Ketal/Hipermaxi/Fidalga) esporádicamente. |
-| Precio | Premium: **~Bs 15–28 / 100 ml**, unas **5–20×** el aceite de cocina común (soya FINO ~Bs 14/L). |
+| Precio | CIF granel **US$ 2,6–5/kg** vs retail **~US$ 29/L** → **markup de cadena 6–10×**. Retail premium: ~Bs 15–28/100 ml. |
 | Exportaciones BO | Bolivia **no exporta** partida 1513 (no figura en ningún ranking exportador). |
 
 ## 4. Marco legal (producir y vender en Bolivia)
@@ -42,16 +44,16 @@ Hay coco en Bolivia (**Santa Cruz, Chapare, Beni, Pando**) pero a **escala modes
 
 ## 6. Recomendaciones
 
-1. **Posicionamiento premium/salud-belleza**, no cocina masiva.
-2. **Diferenciación "producido en Bolivia con coco boliviano"**: el hallazgo DREAMCO sugiere que ese posicionamiento está **vacante** — el principal competidor "local" probablemente importa.
-3. **Asegurar materia prima local primero** (Santa Cruz/Chapare/Beni).
-4. **Usar el DS 5516 este año** para importar equipo con 0 % de arancel.
-5. **Registro SENASAG desde el inicio** (arrancar como *artesanal*, Bs 500).
-6. **Bajar la serie oficial del INE**: sistema COMEX (`http://web3.ine.gob.bo:8082/comex/Main`), partidas NANDINA **1513.11.00 / 1513.19.00** por año y origen. La §3.5 del notebook trae la receta paso a paso y una celda que integra el archivo automáticamente. Confirmar también el GA exacto (AAI-2026) y la identidad DREAMCO ↔ Dream Cos.
+1. **Posicionamiento premium/salud-belleza**, no cocina masiva. El markup CIF→góndola (6–10×) muestra dónde está el margen.
+2. **Diferenciación "producido en Bolivia con coco boliviano"**: DREAMCO (mayor importador) ≈ marca Dream Cos, y hasta la materia prima del mercado es importada — ese posicionamiento está **vacante**.
+3. **Empezar por Santa Cruz y Cochabamba** (~90 % del mercado importado, y las zonas con coco local).
+4. **Asegurar materia prima local** (Santa Cruz/Chapare/Beni) — los competidores la resuelven importando de Asia.
+5. **Usar el DS 5516 este año** (equipo con 0 % de arancel) y **registro SENASAG desde el inicio** (*artesanal*, Bs 500).
+6. **Dimensionar bien el plan**: 40–100 t/año importadas es un nicho chico pero **en crecimiento** (récord 2025). El plan debe capturar una parte + crear demanda nueva. Pendientes: GA exacto (AAI-2026) e identidad DREAMCO ↔ Dream Cos.
 
-## 7. Sobre la serie oficial del INE
+## 7. Sobre la serie oficial del INE (integrada ✅)
 
-Los datos oficiales de importación **existen y son gratuitos**, pero requieren consulta manual (el entorno de esta sesión no puede acceder a ellos por restricciones de red): **INE COMEX** (consulta NANDINA interactiva), **INE importaciones** (Excel), portal **COMEX de Producción** (data-bolivia.produccion.gob.bo), anuarios **IBCE** (PDF) y **TrendEconomy** (serie 2012–2023 base Comtrade). URLs completas en `datos/fuentes_oficiales_bolivia.csv` y en la §3.5 del notebook.
+El análisis usa el **microdato oficial del INE** (620 registros aduaneros 2015–2026, partidas NANDINA de coco), que vive en el Drive del proyecto (**Cocoil → 11_Tamanio_de_mercado → Importaciones → processed**). Los agregados se regeneran con `python src/preparar_ine.py` y la trazabilidad completa está en la **§3.8 del notebook**. Directorio de fuentes oficiales para actualizaciones: `datos/fuentes_oficiales_bolivia.csv`.
 
 ---
 

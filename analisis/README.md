@@ -35,7 +35,11 @@ y guarda las figuras en `figuras/`.
 | `precios_internacionales.csv` | Precio internacional (USD/t) por período | TM Duché, ICC, Banco Mundial |
 | `empresas_exportadoras.csv` | Principales empresas exportadoras/procesadoras | Tendata, Mordor |
 | `filipinas_destinos_2024.csv` | Destinos de exportación de Filipinas | PCA |
-| `importaciones_bolivia_origen.csv` | Origen de importaciones de Bolivia (datos espejo + cotas superiores) | OEC (reporters Ecuador/Brasil/Perú/Chile) |
+| `ine_aceite_coco_anual.csv` | **Serie oficial** de importaciones de aceite de coco (2015–2026): CIF, FOB, kg, crudo/refinado | Microdato INE (vía `src/preparar_ine.py`) |
+| `ine_aceite_coco_origen.csv` | **Serie oficial** por país de origen (total y 2023–2025) | Microdato INE |
+| `ine_aceite_coco_departamento.csv` | **Serie oficial** por departamento de destino | Microdato INE |
+| `ine_cocos_secos.csv` | Bonus: importaciones de cocos secos (0801) anual y por origen | Microdato INE |
+| `importaciones_bolivia_origen.csv` | Datos espejo históricos (superados por la serie INE; se conservan como lección de datos) | OEC (reporters Ecuador/Brasil/Perú/Chile) |
 | `empresas_importadoras_bolivia.csv` | Importadores bolivianos registrados en aduana (HS 1513) | Volza |
 | `fuentes_oficiales_bolivia.csv` | Directorio de fuentes oficiales (INE COMEX, IBCE, etc.) con URLs y tipo de acceso | Verificación propia |
 | `competencia_marcas_bolivia.csv` | Marcas/competidores en Bolivia | Relevamiento web |
@@ -44,16 +48,18 @@ y guarda las figuras en `figuras/`.
 
 ## Nota sobre los datos de Bolivia
 
-Bolivia es un actor muy pequeño en el comercio mundial de aceite de coco; sus
-cifras de importación no se publican de forma limpia en los agregadores. Los
-números de Bolivia son **direccionales** (datos espejo + relevamiento de retail),
-no auditados.
+Las cifras de importación de Bolivia usan el **microdato oficial del INE**
+(620 registros aduaneros 2015–2026, partidas NANDINA de coco). El archivo fuente
+`coconut_oil_imports_filtered.csv` vive en el Drive del proyecto
+(**Cocoil → 11_Tamanio_de_mercado → Importaciones → processed**) y se coloca en
+`data/raw/` (fuera de git). Los agregados versionados de `datos/ine_*.csv` se
+regeneran con:
 
-**La serie oficial existe y es gratuita** en el sistema COMEX del INE
-(`http://web3.ine.gob.bo:8082/comex/Main`, partidas NANDINA 1513.11.00 /
-1513.19.00), pero requiere consulta manual — el entorno donde se generó este
-análisis no puede acceder a ella por restricciones de red. La **§3.5 del
-notebook** trae la receta paso a paso; al guardar el resultado como
-`data/raw/ine_comex_1513.csv`, la celda de esa sección genera automáticamente
-la serie oficial. Directorio completo de fuentes en
-`datos/fuentes_oficiales_bolivia.csv`.
+```bash
+python src/preparar_ine.py
+```
+
+Trazabilidad, esquema del microdato y cómo actualizar cuando salgan nuevos
+meses: **§3.8 del notebook**. Directorio de fuentes oficiales (INE COMEX, IBCE,
+etc.): `datos/fuentes_oficiales_bolivia.csv`. Marcas y precios de retail siguen
+siendo relevamiento web (direccionales).
