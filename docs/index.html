@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cocoil · Aceite de coco en Bolivia — dashboard</title>
+<meta name="description" content="Dashboard del mercado de aceite de coco: importaciones oficiales de Bolivia (INE), contexto global, competencia y marco legal.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥥</text></svg>">
+<style>
+:root{
+  --surface-1:#fcfcfb; --page:#f9f9f7;
+  --ink-1:#0b0b0b; --ink-2:#52514e; --ink-3:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+  --s1:#1E8F58; --s2:#E08D3C; --s3:#2E72C8; --s4:#A65B2B;
+  --wash:rgba(30,143,88,.08);
+}
+@media (prefers-color-scheme:dark){:root{
+  --surface-1:#1a1a19; --page:#0d0d0d;
+  --ink-1:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+  --s1:#27A96C; --s2:#CF7C28; --s3:#4E8BDD; --s4:#B96A3B;
+  --wash:rgba(39,169,108,.12);
+}}
+:root[data-theme="light"]{
+  --surface-1:#fcfcfb; --page:#f9f9f7;
+  --ink-1:#0b0b0b; --ink-2:#52514e; --ink-3:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+  --s1:#1E8F58; --s2:#E08D3C; --s3:#2E72C8; --s4:#A65B2B;
+  --wash:rgba(30,143,88,.08);
+}
+:root[data-theme="dark"]{
+  --surface-1:#1a1a19; --page:#0d0d0d;
+  --ink-1:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+  --s1:#27A96C; --s2:#CF7C28; --s3:#4E8BDD; --s4:#B96A3B;
+  --wash:rgba(39,169,108,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink-1);
+  font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:20px 24px 0;max-width:1180px;margin:0 auto}
+h1{font-size:22px;margin:0 0 2px}
+.sub{color:var(--ink-2);font-size:13.5px;margin:0}
+.topbar{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.topbar .spacer{flex:1}
+#themeBtn{border:1px solid var(--border);background:var(--surface-1);color:var(--ink-2);
+  border-radius:8px;padding:5px 12px;cursor:pointer;font:inherit;font-size:13px}
+nav{display:flex;gap:4px;margin:16px auto 0;max-width:1180px;padding:0 24px;flex-wrap:wrap}
+nav button{border:none;background:none;color:var(--ink-2);font:inherit;font-size:14px;
+  padding:9px 14px;cursor:pointer;border-radius:9px 9px 0 0;border-bottom:2px solid transparent}
+nav button[aria-selected="true"]{color:var(--ink-1);font-weight:600;border-bottom-color:var(--s1);background:var(--surface-1)}
+main{max-width:1180px;margin:0 auto;padding:18px 24px 60px}
+section[hidden]{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;
+  padding:16px 18px 12px;min-width:0}
+.card.wide{grid-column:1/-1}
+.card h3{margin:0 0 2px;font-size:15px}
+.card .note{color:var(--ink-3);font-size:12px;margin:2px 0 10px}
+.card .src{color:var(--ink-3);font-size:11.5px;margin:8px 0 0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+.tile .v{font-size:27px;font-weight:700;letter-spacing:-.01em}
+.tile .k{color:var(--ink-2);font-size:12.5px;margin-top:2px}
+.tile .d{color:var(--ink-3);font-size:11.5px;margin-top:4px}
+svg{display:block;width:100%;height:auto}
+.bar{rx:0}
+.filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 16px;
+  padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:12px}
+.filters .lbl{color:var(--ink-2);font-size:13px;margin-right:2px}
+.filters button{border:1px solid var(--border);background:none;color:var(--ink-2);font:inherit;
+  font-size:13px;padding:5px 12px;border-radius:999px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--wash);color:var(--ink-1);border-color:var(--s1);font-weight:600}
+.filters select{border:1px solid var(--border);background:var(--surface-1);color:var(--ink-1);
+  font:inherit;font-size:13px;padding:5px 10px;border-radius:8px}
+.tbl-btn{border:none;background:none;color:var(--ink-3);font:inherit;font-size:12px;
+  cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:2px}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px}
+th{text-align:left;color:var(--ink-2);font-weight:600;border-bottom:1px solid var(--axis);padding:5px 10px 5px 0}
+td{border-bottom:1px solid var(--grid);padding:5px 10px 5px 0;color:var(--ink-1)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+#tooltip{position:fixed;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);
+  border-radius:9px;padding:8px 11px;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.14);
+  z-index:50;display:none;max-width:260px}
+#tooltip .t{color:var(--ink-2);margin-bottom:3px}
+#tooltip .row{display:flex;align-items:center;gap:7px}
+#tooltip .key{width:14px;height:0;border-top:3px solid;border-radius:2px}
+#tooltip .val{font-weight:700}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin:2px 0 6px}
+.legend .it{display:flex;align-items:center;gap:6px}
+.legend .sw{width:11px;height:11px;border-radius:3px}
+.callout{background:var(--wash);border:1px solid var(--border);border-radius:12px;
+  padding:12px 16px;font-size:13.5px;color:var(--ink-1);margin:0 0 16px}
+footer{max-width:1180px;margin:0 auto;padding:0 24px 40px;color:var(--ink-3);font-size:12px}
+a{color:var(--s3)}
+</style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <div>
+      <h1>🥥 Cocoil · Aceite de coco en Bolivia</h1>
+      <p class="sub">Importaciones oficiales (INE 2015–2026), contexto global, competencia y marco legal</p>
+    </div>
+    <div class="spacer"></div>
+    <button id="themeBtn" type="button">🌗 Tema</button>
+  </div>
+</header>
+<nav id="tabs" role="tablist"></nav>
+<main id="main"></main>
+<footer>
+  Datos: microdato INE (NANDINA 1513.11/1513.19 y 0801), OEC/Comtrade, PCA, ICC, Banco Mundial, SENASAG, IBNORCA, Volza y relevamiento web.
+  Cifras de retail y marcas: direccionales. Repositorio: <span id="footRepo">coco-analytics</span> · Actualizado: <span id="footDate"></span>
+</footer>
+<div id="tooltip" role="status"></div>
+<script src="datos.js"></script>
+<script>
+"use strict";
+const D = window.DATOS;
+const $ = (s,el=document)=>el.querySelector(s);
+const CSS = n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const S = ()=>({s1:CSS('--s1'),s2:CSS('--s2'),s3:CSS('--s3'),s4:CSS('--s4'),
+  ink2:CSS('--ink-2'),ink3:CSS('--ink-3'),grid:CSS('--grid'),axis:CSS('--axis')});
+const fmtUSD = v=> v>=1e9? '$'+(v/1e9).toLocaleString('es-BO',{maximumFractionDigits:2})+' MM'
+  : v>=1e6? '$'+(v/1e6).toLocaleString('es-BO',{maximumFractionDigits:1})+' M'
+  : v>=1e3? '$'+Math.round(v/1e3).toLocaleString('es-BO')+' k' : '$'+Math.round(v).toLocaleString('es-BO');
+const fmtN = v=> Math.round(v).toLocaleString('es-BO');
+
+/* ---------- tooltip ---------- */
+const tip = $('#tooltip');
+function showTip(ev, title, rows){
+  tip.replaceChildren();
+  const t=document.createElement('div'); t.className='t'; t.textContent=title; tip.appendChild(t);
+  for(const r of rows){
+    const d=document.createElement('div'); d.className='row';
+    const k=document.createElement('span'); k.className='key'; k.style.borderTopColor=r.color;
+    const v=document.createElement('span'); v.className='val'; v.textContent=r.value;
+    const l=document.createElement('span'); l.textContent=r.label;
+    d.append(k,v,l); tip.appendChild(d);
+  }
+  tip.style.display='block';
+  const w=tip.offsetWidth, h=tip.offsetHeight;
+  let x=ev.clientX+14, y=ev.clientY-h-10;
+  if(x+w>innerWidth-8) x=ev.clientX-w-14;
+  if(y<8) y=ev.clientY+16;
+  tip.style.left=x+'px'; tip.style.top=y+'px';
+}
+const hideTip=()=>{tip.style.display='none';};
+
+/* ---------- SVG helpers ---------- */
+const NS='http://www.w3.org/2000/svg';
+function el(n,attrs){const e=document.createElementNS(NS,n);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+function niceMax(v){const p=Math.pow(10,Math.floor(Math.log10(v)));const d=v/p;
+  return (d<=1?1:d<=2?2:d<=2.5?2.5:d<=5?5:10)*p;}
+
+/* Horizontal bars: items=[{label, value, extra?}] one series */
+function hBars(items,{fmt=fmtUSD, color, unit='', tipLabel='valor'}={}){
+  const c=color||S().s1, W=560, rowH=34, padL=8, padR=118, H=items.length*rowH+6;
+  const max=Math.max(...items.map(d=>d.value),1);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  items.forEach((d,i)=>{
+    const y=i*rowH+4, bw=Math.max(2,(d.value/max)*(W-padL-padR-170));
+    const g=el('g',{});
+    const lab=el('text',{x:padL,y:y+15,fill:S().ink2,'font-size':'12.5'});
+    lab.textContent=d.label.length>23? d.label.slice(0,22).trimEnd()+'…' : d.label;
+    const r=el('rect',{x:padL+170,y:y,width:bw,height:20,rx:4,fill:c});
+    const val=el('text',{x:padL+170+bw+7,y:y+15,fill:S().ink2,'font-size':'12','font-weight':'600'});
+    val.textContent=fmt(d.value)+(d.extra?('  '+d.extra):'');
+    const hit=el('rect',{x:0,y:y-2,width:W,height:rowH-6,fill:'transparent'});
+    hit.addEventListener('pointermove',ev=>{r.setAttribute('opacity','.82');
+      showTip(ev,d.label,[{color:c,value:fmt(d.value)+unit,label:tipLabel}]);});
+    hit.addEventListener('pointerleave',()=>{r.setAttribute('opacity','1');hideTip();});
+    g.append(lab,r,val,hit); svg.appendChild(g);
+  });
+  return svg;
+}
+
+/* Vertical stacked bars per year: rows=[{x, parts:[{key,value,color,label}]}] */
+function vStack(rows,{fmt=fmtUSD}={}){
+  const W=620,H=250,padL=52,padB=26,padT=14;
+  const max=niceMax(Math.max(...rows.map(r=>r.parts.reduce((a,p)=>a+p.value,0)),1));
+  const iw=(W-padL-10)/rows.length, bw=Math.min(iw*0.62,42);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  for(let i=0;i<=4;i++){const v=max*i/4, y=H-padB-(H-padB-padT)*i/4;
+    svg.appendChild(el('line',{x1:padL,x2:W-6,y1:y,y2:y,stroke:S().grid,'stroke-width':1}));
+    const t=el('text',{x:padL-6,y:y+4,fill:S().ink3,'font-size':'11','text-anchor':'end'});
+    t.textContent=fmt(v); svg.appendChild(t);}
+  svg.appendChild(el('line',{x1:padL,x2:W-6,y1:H-padB,y2:H-padB,stroke:S().axis,'stroke-width':1}));
+  rows.forEach((r,i)=>{
+    const cx=padL+iw*i+iw/2;
+    let y=H-padB;
+    r.parts.forEach((p,pi)=>{
+      const h=(p.value/max)*(H-padB-padT);
+      if(h>0.5){
+        const top=pi===r.parts.length-1||r.parts.slice(pi+1).every(q=>q.value===0);
+        svg.appendChild(el('rect',{x:cx-bw/2,y:y-h,width:bw,height:Math.max(h-2,1.2),
+          rx:top?4:0,fill:p.color}));
+      }
+      y-=h;
+    });
+    const t=el('text',{x:cx,y:H-padB+16,fill:S().ink3,'font-size':'11','text-anchor':'middle'});
+    t.textContent=r.x; svg.appendChild(t);
+    const hit=el('rect',{x:cx-iw/2,y:padT,width:iw,height:H-padB-padT,fill:'transparent'});
+    hit.addEventListener('pointermove',ev=>showTip(ev,String(r.x),
+      r.parts.map(p=>({color:p.color,value:fmt(p.value),label:p.label}))
+        .concat([{color:S().ink3,value:fmt(r.parts.reduce((a,p)=>a+p.value,0)),label:'total'}])));
+    hit.addEventListener('pointerleave',hideTip);
+    svg.appendChild(hit);
+  });
+  return svg;
+}
+
+/* Line chart: pts=[{x,label,value}] */
+function line(pts,{fmt=v=>'$'+fmtN(v), color, unit=''}={}){
+  const c=color||S().s3, W=620,H=240,padL=56,padB=44,padT=12;
+  const max=niceMax(Math.max(...pts.map(p=>p.value))*1.06);
+  const X=i=>padL+ (W-padL-14)*(pts.length===1?0.5:i/(pts.length-1));
+  const Y=v=>H-padB-(H-padB-padT)*v/max;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  for(let i=0;i<=4;i++){const v=max*i/4;
+    svg.appendChild(el('line',{x1:padL,x2:W-10,y1:Y(v),y2:Y(v),stroke:S().grid,'stroke-width':1}));
+    const t=el('text',{x:padL-6,y:Y(v)+4,fill:S().ink3,'font-size':'11','text-anchor':'end'});
+    t.textContent=fmt(v); svg.appendChild(t);}
+  const dPath=pts.map((p,i)=>(i?'L':'M')+X(i)+','+Y(p.value)).join(' ');
+  svg.appendChild(el('path',{d:dPath,fill:'none',stroke:c,'stroke-width':2,'stroke-linejoin':'round'}));
+  const cross=el('line',{y1:padT,y2:H-padB,stroke:S().axis,'stroke-width':1,visibility:'hidden'});
+  svg.appendChild(cross);
+  pts.forEach((p,i)=>{
+    svg.appendChild(el('circle',{cx:X(i),cy:Y(p.value),r:4,fill:c,stroke:'var(--surface-1)','stroke-width':2}));
+    const t=el('text',{x:X(i),y:H-padB+15,fill:S().ink3,'font-size':'10','text-anchor':'middle'});
+    // rotate long labels
+    if(String(p.label).length>7){t.setAttribute('transform',`rotate(-28 ${X(i)} ${H-padB+15})`);
+      t.setAttribute('text-anchor','end');}
+    t.textContent=p.label; svg.appendChild(t);
+  });
+  const last=pts[pts.length-1];
+  const lastT=el('text',{x:X(pts.length-1),y:Y(last.value)-10,fill:S().ink2,'font-size':'11.5','font-weight':'700','text-anchor':'end'});
+  lastT.textContent=fmt(last.value)+unit; svg.appendChild(lastT);
+  const hit=el('rect',{x:padL,y:padT,width:W-padL-10,height:H-padB-padT,fill:'transparent'});
+  hit.addEventListener('pointermove',ev=>{
+    const box=svg.getBoundingClientRect();
+    const mx=(ev.clientX-box.left)*(W/box.width);
+    let bi=0,bd=1e9; pts.forEach((p,i)=>{const d=Math.abs(X(i)-mx); if(d<bd){bd=d;bi=i;}});
+    cross.setAttribute('x1',X(bi)); cross.setAttribute('x2',X(bi)); cross.setAttribute('visibility','visible');
+    showTip(ev,String(pts[bi].label),[{color:c,value:fmt(pts[bi].value)+unit,label:''}]);
+  });
+  hit.addEventListener('pointerleave',()=>{cross.setAttribute('visibility','hidden');hideTip();});
+  svg.appendChild(hit);
+  return svg;
+}
+
+/* ---------- card + table view ---------- */
+function card({title,note,src,build,table,wide}){
+  const c=document.createElement('div'); c.className='card'+(wide?' wide':'');
+  const h=document.createElement('h3'); h.textContent=title; c.appendChild(h);
+  if(note){const n=document.createElement('p'); n.className='note'; n.textContent=note; c.appendChild(n);}
+  const body=document.createElement('div'); c.appendChild(body);
+  let showingTable=false;
+  const render=()=>{body.replaceChildren(showingTable? mkTable(table): build());};
+  if(table){
+    const btn=document.createElement('button'); btn.className='tbl-btn'; btn.type='button';
+    btn.textContent='Ver tabla';
+    btn.addEventListener('click',()=>{showingTable=!showingTable;
+      btn.textContent=showingTable?'Ver gráfico':'Ver tabla'; render();});
+    c.appendChild(btn);
+  }
+  if(src){const s=document.createElement('p'); s.className='src'; s.textContent='Fuente: '+src; c.appendChild(s);}
+  render();
+  c._rerender=()=>{if(!showingTable)render();};
+  return c;
+}
+function mkTable({head,rows}){
+  const w=document.createElement('div'); w.className='tblwrap';
+  const t=document.createElement('table');
+  const tr=document.createElement('tr');
+  head.forEach((hd,i)=>{const th=document.createElement('th'); th.textContent=hd;
+    if(i>0)th.className='num'; tr.appendChild(th);});
+  t.appendChild(tr);
+  rows.forEach(r=>{const tr2=document.createElement('tr');
+    r.forEach((v,i)=>{const td=document.createElement('td'); td.textContent=v;
+      if(i>0)td.className='num'; tr2.appendChild(td);});
+    t.appendChild(tr2);});
+  w.appendChild(t); return w;
+}
+function legend(items){
+  const l=document.createElement('div'); l.className='legend';
+  items.forEach(it=>{const d=document.createElement('span'); d.className='it';
+    const sw=document.createElement('span'); sw.className='sw'; sw.style.background=it.color;
+    const t=document.createElement('span'); t.textContent=it.label;
+    d.append(sw,t); l.appendChild(d);});
+  return l;
+}
+
+/* ---------- state & aggregation ---------- */
+const state={desde:2015,hasta:2026,tipo:'todos'};
+function acFiltrado(){
+  return D.bolivia.aceite.filter(r=>r.anio>=state.desde&&r.anio<=state.hasta&&
+    (state.tipo==='todos'||r.tipo===state.tipo));
+}
+const sum=(arr,f)=>arr.reduce((a,x)=>a+f(x),0);
+function groupBy(arr,key,val){
+  const m=new Map();
+  for(const r of arr){const k=key(r); m.set(k,(m.get(k)||0)+val(r));}
+  return m;
+}
+
+/* ---------- sections ---------- */
+const secciones=[
+ {id:'resumen',nombre:'Resumen'},
+ {id:'mundo',nombre:'🌍 Mundo'},
+ {id:'bolivia',nombre:'🇧🇴 Bolivia (INE)'},
+ {id:'competencia',nombre:'Competencia'},
+ {id:'legal',nombre:'Legal y fuentes'},
+];
+
+function buildResumen(root){
+  const ac=D.bolivia.aceite;
+  const cif25=sum(ac.filter(r=>r.anio===2025),r=>r.cif);
+  const kg25=sum(ac.filter(r=>r.anio===2025),r=>r.kg);
+  const cifTot=sum(ac,r=>r.cif);
+  const refPct=Math.round(100*sum(ac.filter(r=>r.tipo==='refinado'),r=>r.cif)/cifTot);
+  const sc=Math.round(100*sum(ac.filter(r=>r.depto==='Santa Cruz'),r=>r.cif)/cifTot);
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  [
+   {v:fmtUSD(cif25),k:'Importación de aceite de coco 2025 (CIF)',d:'Microdato INE, NANDINA 1513'},
+   {v:fmtN(kg25/1000)+' t',k:'Volumen 2025 — récord de la serie',d:'~2,4× el volumen de 2020'},
+   {v:refPct+' %',k:'Del valor acumulado es refinado (1513.19)',d:'El crudo es marginal'},
+   {v:sc+' %',k:'Del valor llega a Santa Cruz',d:'Cochabamba ~27 %, La Paz ~8 %'},
+   {v:'US$ 2.990/t',k:'Pico histórico del precio internacional (2025)',d:'CIF Rotterdam · ICC'},
+   {v:'6–10×',k:'Markup CIF → góndola en Bolivia',d:'CIF $2,6–5/kg vs retail ~US$29/L'},
+  ].forEach(t=>{const d=document.createElement('div'); d.className='tile';
+    const v=document.createElement('div'); v.className='v'; v.textContent=t.v;
+    const k=document.createElement('div'); k.className='k'; k.textContent=t.k;
+    const dd=document.createElement('div'); dd.className='d'; dd.textContent=t.d;
+    d.append(v,k,dd); tiles.appendChild(d);});
+  root.appendChild(tiles);
+  const co=document.createElement('div'); co.className='callout';
+  co.textContent='💡 Hallazgo clave: el aceite de coco real llega directo de Asia (Sri Lanka en volumen, Malasia en premium) y vía hubs europeos. El mayor importador (DREAMCO SRL, ~25 % de los envíos) es probablemente la marca "Dream Cos" — y Bolivia importa más cocos secos que aceite. El posicionamiento "producido en Bolivia con coco boliviano" está vacante.';
+  root.appendChild(co);
+  const g=document.createElement('div'); g.className='grid';
+  g.appendChild(card({
+    title:'Importaciones de aceite de coco de Bolivia (CIF, US$)',
+    note:'Serie oficial INE · pico 2023 = Malasia $810k en 4 envíos (~$44/kg, producto premium)',
+    src:'Microdato INE (NANDINA 1513.11/1513.19). 2026 parcial.',
+    build:()=>{
+      const años=[...new Set(ac.map(r=>r.anio))].sort().filter(a=>a<=2025);
+      return vStack(años.map(a=>({x:a,parts:[
+        {key:'ref',label:'refinado',value:sum(ac.filter(r=>r.anio===a&&r.tipo==='refinado'),r=>r.cif),color:S().s1},
+        {key:'cru',label:'crudo',value:sum(ac.filter(r=>r.anio===a&&r.tipo==='crudo'),r=>r.cif),color:S().s2},
+      ]})));
+    },
+    table:{head:['Año','Refinado US$','Crudo US$','Total US$'],
+      rows:[...new Set(ac.map(r=>r.anio))].sort().map(a=>{
+        const re=sum(ac.filter(r=>r.anio===a&&r.tipo==='refinado'),r=>r.cif);
+        const cr=sum(ac.filter(r=>r.anio===a&&r.tipo==='crudo'),r=>r.cif);
+        return [a,fmtN(re),fmtN(cr),fmtN(re+cr)];})}
+  }));
+  const exp=D.mundo.exportadores;
+  g.appendChild(card({
+    title:'¿Quién exporta aceite de coco en el mundo? (2024)',
+    note:'Indonesia superó a Filipinas; Países Bajos es re-exportador',
+    src:'OEC (HS 1513, 2024).',
+    build:()=>hBars(exp.map(e=>({label:e.pais,value:e.usd,extra:'('+Math.round(e.pct)+'%)'}))),
+    table:{head:['País','US$','% mundo'],rows:exp.map(e=>[e.pais,fmtN(e.usd),Math.round(e.pct)+'%'])}
+  }));
+  root.appendChild(g);
+  const l=legend([{label:'refinado',color:S().s1},{label:'crudo',color:S().s2}]);
+  g.children[0].insertBefore(l,g.children[0].children[2]);
+}
+
+function buildMundo(root){
+  const g=document.createElement('div'); g.className='grid';
+  const m=D.mundo;
+  g.appendChild(card({
+    title:'Valor mundial de exportación (HS 1513)',
+    note:'2024: +20,3 % — alza por precio, no por volumen',
+    src:'OEC (2023–2024); IndexBox (2018, base distinta).',
+    build:()=>vStack(m.valorAnual.map(r=>({x:r.anio,parts:[{label:'mundo',value:r.usd,color:S().s1}]}))),
+    table:{head:['Año','US$'],rows:m.valorAnual.map(r=>[r.anio,fmtN(r.usd)])}
+  }));
+  g.appendChild(card({
+    title:'Precio internacional (US$/tonelada)',
+    note:'Casi se triplicó entre 2024 y 2025 (El Niño/La Niña + demanda)',
+    src:'TM Duché, Statista/Banco Mundial, ICC (CIF Rotterdam/FOB).',
+    build:()=>line(m.precios.map(p=>({label:p.periodo,value:p.usd_t})),{unit:'/t'}),
+    table:{head:['Período','US$/t','Base'],rows:m.precios.map(p=>[p.periodo,fmtN(p.usd_t),p.base])}
+  }));
+  g.appendChild(card({
+    title:'Exportadores 2024',
+    src:'OEC (HS 1513).',
+    build:()=>hBars(m.exportadores.map(e=>({label:e.pais,value:e.usd,extra:'('+Math.round(e.pct)+'%)'}))),
+    table:{head:['País','US$','%','Rol'],rows:m.exportadores.map(e=>[e.pais,fmtN(e.usd),Math.round(e.pct)+'%',e.rol])}
+  }));
+  g.appendChild(card({
+    title:'Importadores 2024',
+    src:'OEC (HS 1513).',
+    build:()=>hBars(m.importadores.map(e=>({label:e.pais,value:e.usd})),{color:S().s3}),
+    table:{head:['País','US$','Rol'],rows:m.importadores.map(e=>[e.pais,fmtN(e.usd),e.rol])}
+  }));
+  g.appendChild(card({
+    title:'Principales empresas exportadoras/procesadoras',wide:true,
+    note:'No existe cuota de mercado auditada pública — lista directional',
+    src:'Tendata, Mordor Intelligence, perfiles de empresa.',
+    build:()=>mkTable({head:['Empresa','Sede','Rol','Nota'],
+      rows:D.mundo.empresas.map(e=>[e.empresa,e.pais_sede,e.rol,e.nota])}).firstChild? mkTable({head:['Empresa','Sede','Rol','Nota'],
+      rows:D.mundo.empresas.map(e=>[e.empresa,e.pais_sede,e.rol,e.nota])}):document.createElement('div'),
+  }));
+  root.appendChild(g);
+}
+
+function buildBolivia(root){
+  const f=document.createElement('div'); f.className='filters';
+  const lbl=document.createElement('span'); lbl.className='lbl'; lbl.textContent='Período:'; f.appendChild(lbl);
+  const presets=[['Todo',2015,2026],['Últimos 5 años',2021,2026],['Últimos 3 años',2023,2026]];
+  const btns=presets.map(([n,a,b])=>{
+    const btn=document.createElement('button'); btn.type='button'; btn.textContent=n;
+    btn.setAttribute('aria-pressed',state.desde===a&&state.hasta===b?'true':'false');
+    btn.addEventListener('click',()=>{state.desde=a;state.hasta=b;
+      btns.forEach(x=>x.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true'); renderBolivia();});
+    f.appendChild(btn); return btn;});
+  const lbl2=document.createElement('span'); lbl2.className='lbl'; lbl2.style.marginLeft='10px';
+  lbl2.textContent='Tipo:'; f.appendChild(lbl2);
+  const sel=document.createElement('select');
+  [['todos','Crudo + refinado'],['refinado','Solo refinado'],['crudo','Solo crudo']].forEach(([v,n])=>{
+    const o=document.createElement('option'); o.value=v; o.textContent=n; sel.appendChild(o);});
+  sel.addEventListener('change',()=>{state.tipo=sel.value; renderBolivia();});
+  f.appendChild(sel);
+  root.appendChild(f);
+  const g=document.createElement('div'); g.className='grid'; g.id='gridBO';
+  root.appendChild(g);
+  renderBolivia();
+}
+
+function renderBolivia(){
+  const g=$('#gridBO'); if(!g)return;
+  g.replaceChildren();
+  const ac=acFiltrado();
+  const años=[...new Set(ac.map(r=>r.anio))].sort();
+  const c1=card({
+    title:'Serie anual — valor CIF (US$)',
+    note:'2026 es año parcial',
+    src:'Microdato INE (registros aduaneros).',
+    build:()=>vStack(años.map(a=>({x:a,parts:[
+      {label:'refinado',value:sum(ac.filter(r=>r.anio===a&&r.tipo==='refinado'),r=>r.cif),color:S().s1},
+      {label:'crudo',value:sum(ac.filter(r=>r.anio===a&&r.tipo==='crudo'),r=>r.cif),color:S().s2},
+    ]}))),
+    table:{head:['Año','Refinado US$','Crudo US$','kg'],rows:años.map(a=>[
+      a,fmtN(sum(ac.filter(r=>r.anio===a&&r.tipo==='refinado'),r=>r.cif)),
+      fmtN(sum(ac.filter(r=>r.anio===a&&r.tipo==='crudo'),r=>r.cif)),
+      fmtN(sum(ac.filter(r=>r.anio===a),r=>r.kg))])}
+  });
+  c1.insertBefore(legend([{label:'refinado',color:S().s1},{label:'crudo',color:S().s2}]),c1.children[2]);
+  g.appendChild(c1);
+  g.appendChild(card({
+    title:'Serie anual — volumen (toneladas)',
+    note:'El volumen crece más estable que el valor (récord ~104 t en 2025)',
+    src:'Microdato INE.',
+    build:()=>vStack(años.map(a=>({x:a,parts:[
+      {label:'toneladas',value:sum(ac.filter(r=>r.anio===a),r=>r.kg)/1000,color:S().s3}]})),
+      {fmt:v=>fmtN(v)+' t'}),
+    table:{head:['Año','t'],rows:años.map(a=>[a,fmtN(sum(ac.filter(r=>r.anio===a),r=>r.kg)/1000)])}
+  }));
+  const porOrigen=[...groupBy(ac,r=>r.origen,r=>r.cif)].map(([k,v])=>({label:k,value:v}))
+    .filter(d=>d.value>100).sort((a,b)=>b.value-a.value).slice(0,9);
+  g.appendChild(card({
+    title:'Origen de las importaciones (CIF)',
+    note:'Sri Lanka = volumen a granel · Malasia = premium (~$44/kg) · P. Bajos/Alemania = re-export UE',
+    src:'Microdato INE. Se omiten flujos < US$100.',
+    build:()=>hBars(porOrigen),
+    table:{head:['Origen','US$ CIF'],rows:porOrigen.map(d=>[d.label,fmtN(d.value)])}
+  }));
+  const porDepto=[...groupBy(ac,r=>r.depto,r=>r.cif)].map(([k,v])=>({label:k,value:v}))
+    .sort((a,b)=>b.value-a.value);
+  const totD=sum(porDepto,d=>d.value)||1;
+  g.appendChild(card({
+    title:'¿A qué departamento llega?',
+    note:'El mercado (y la competencia) está en Santa Cruz y Cochabamba',
+    src:'Microdato INE (aduana de destino).',
+    build:()=>hBars(porDepto.map(d=>({...d,extra:'('+Math.round(100*d.value/totD)+'%)'})),{color:S().s2}),
+    table:{head:['Departamento','US$ CIF','%'],rows:porDepto.map(d=>[d.label,fmtN(d.value),Math.round(100*d.value/totD)+'%'])}
+  }));
+  const precio=años.map(a=>{const cif=sum(ac.filter(r=>r.anio===a),r=>r.cif);
+    const kg=sum(ac.filter(r=>r.anio===a),r=>r.kg);
+    return kg>0?{label:a,value:+(cif/kg).toFixed(2)}:null;}).filter(Boolean);
+  g.appendChild(card({
+    title:'Precio implícito CIF (US$/kg)',
+    note:'Granel ronda $2,6–5/kg; los picos son mezcla con producto premium envasado',
+    src:'Microdato INE (CIF ÷ kg).',
+    build:()=>line(precio,{fmt:v=>'$'+v.toLocaleString('es-BO',{maximumFractionDigits:1}),unit:'/kg',color:S().s3}),
+    table:{head:['Año','US$/kg'],rows:precio.map(p=>[p.label,p.value.toLocaleString('es-BO')])}
+  }));
+  const cocos=D.bolivia.cocos.filter(r=>r.anio>=state.desde&&r.anio<=state.hasta);
+  const cocosAnual=[...groupBy(cocos,r=>r.anio,r=>r.cif)].sort((a,b)=>a[0]-b[0]);
+  g.appendChild(card({
+    title:'Bonus: cocos secos (0801) — la materia prima también se importa',
+    note:'Acumulado 2015–2026: US$ 4,9 M (más que el aceite) desde Indonesia/Malasia/Vietnam',
+    src:'Microdato INE (NANDINA 0801).',
+    build:()=>vStack(cocosAnual.map(([a,v])=>({x:a,parts:[{label:'cocos secos',value:v,color:S().s4}]}))),
+    table:{head:['Año','US$ CIF'],rows:cocosAnual.map(([a,v])=>[a,fmtN(v)])}
+  }));
+}
+
+function buildCompetencia(root){
+  const g=document.createElement('div'); g.className='grid';
+  const imp=D.competencia.importadores.filter(i=>i.empresa!=='Otros');
+  g.appendChild(card({
+    title:'Importadores directos registrados en aduana (HS 1513)',
+    note:'DREAMCO SRL ≈ marca "Dream Cos" (por verificar): el mayor competidor "local" probablemente importa',
+    src:'Volza (registros aduaneros). Nº de envíos ≠ valor.',
+    build:()=>hBars(imp.map(i=>({label:i.empresa,value:i.envios_registrados,
+      extra:'(~'+i.participacion_pct+'%)'})),{fmt:v=>fmtN(v)+' envíos',tipLabel:'envíos'}),
+    table:{head:['Empresa','Envíos','%'],rows:imp.map(i=>[i.empresa,i.envios_registrados,i.participacion_pct+'%'])}
+  }));
+  const pr=D.competencia.preciosRetail.filter(p=>typeof p.equivalente_bs_100ml==='number'||!isNaN(parseFloat(p.equivalente_bs_100ml)));
+  g.appendChild(card({
+    title:'Precios en Bolivia (Bs por 100 ml)',
+    note:'El coco premium cuesta 5–20× el aceite de cocina común',
+    src:'Selina Wamucii, CaliFrut, listados de mercado (direccional).',
+    build:()=>hBars(pr.map(p=>({label:p.segmento,value:parseFloat(p.equivalente_bs_100ml)})),
+      {fmt:v=>'Bs '+v.toLocaleString('es-BO',{maximumFractionDigits:1}),color:S().s2,tipLabel:'Bs/100ml'}),
+    table:{head:['Segmento','Precio','Unidad','Bs/100ml'],
+      rows:D.competencia.preciosRetail.map(p=>[p.segmento,p.precio_bs,p.unidad,String(p.equivalente_bs_100ml)])}
+  }));
+  g.appendChild(card({
+    title:'Marcas y vendedores relevados en el mercado boliviano',wide:true,
+    note:'Muestra no exhaustiva (relevamiento web); el nicho premium-VCO lo sirven sobre todo jugadores locales/artesanales',
+    src:'CaliFrut, Viasana, evisos, redes sociales.',
+    build:()=>mkTable({head:['Marca','Origen','Producto','Presentaciones','Precio (Bs)','Canal'],
+      rows:D.competencia.marcas.map(m=>[m.marca,m.origen,m.tipo_producto,m.presentaciones,m.precio_bs_rango,m.canal])}),
+  }));
+  root.appendChild(g);
+}
+
+function buildLegal(root){
+  const co=document.createElement('div'); co.className='callout';
+  co.textContent='🎯 Ventana 2026: el DS 5516 ("Arancel Cero") permite importar maquinaria y equipo agroalimentario con 0 % de gravamen arancelario hasta el 31-dic-2026 — aplica a la prensa y embotelladora.';
+  root.appendChild(co);
+  const g=document.createElement('div'); g.className='grid';
+  g.appendChild(card({
+    title:'Requisitos y costos para producir y vender',wide:true,
+    src:'SENASAG, IBNORCA, AAI-2026, Bolivia Impuestos.',
+    build:()=>mkTable({head:['Concepto','Detalle','Valor','Vigencia'],
+      rows:D.legal.map(l=>[l.concepto,l.detalle,String(l.valor),l.vigencia])}),
+  }));
+  g.appendChild(card({
+    title:'Fuentes oficiales de datos (para actualizar el análisis)',wide:true,
+    src:'Verificación propia, julio 2026.',
+    build:()=>{
+      const w=document.createElement('div'); w.className='tblwrap';
+      const t=document.createElement('table');
+      const tr=document.createElement('tr');
+      ['Fuente','Contenido','Acceso'].forEach(h=>{const th=document.createElement('th');
+        th.textContent=h; tr.appendChild(th);});
+      t.appendChild(tr);
+      D.fuentes.forEach(f=>{const r=document.createElement('tr');
+        const td1=document.createElement('td'); const a=document.createElement('a');
+        a.href=f.url; a.textContent=f.fuente; a.target='_blank'; a.rel='noopener'; td1.appendChild(a);
+        const td2=document.createElement('td'); td2.textContent=f.contenido;
+        const td3=document.createElement('td'); td3.textContent=f.acceso;
+        r.append(td1,td2,td3); t.appendChild(r);});
+      w.appendChild(t); return w;
+    },
+  }));
+  root.appendChild(g);
+}
+
+/* ---------- shell ---------- */
+const builders={resumen:buildResumen,mundo:buildMundo,bolivia:buildBolivia,
+  competencia:buildCompetencia,legal:buildLegal};
+const nav=$('#tabs'), main=$('#main');
+const panels={};
+secciones.forEach((s,i)=>{
+  const b=document.createElement('button'); b.type='button'; b.textContent=s.nombre;
+  b.setAttribute('role','tab'); b.setAttribute('aria-selected',i===0?'true':'false');
+  b.addEventListener('click',()=>selectTab(s.id));
+  b.dataset.id=s.id; nav.appendChild(b);
+  const sec=document.createElement('section'); sec.id='sec-'+s.id;
+  if(i>0)sec.hidden=true; main.appendChild(sec); panels[s.id]=sec;
+});
+function selectTab(id){
+  nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',b.dataset.id===id?'true':'false'));
+  Object.entries(panels).forEach(([k,sec])=>{sec.hidden=k!==id;});
+  if(!panels[id].dataset.built){builders[id](panels[id]); panels[id].dataset.built='1';}
+}
+function rebuildAll(){
+  Object.values(panels).forEach(p=>{p.replaceChildren(); delete p.dataset.built;});
+  const activo=nav.querySelector('[aria-selected="true"]').dataset.id;
+  builders[activo](panels[activo]); panels[activo].dataset.built='1';
+}
+$('#themeBtn').addEventListener('click',()=>{
+  const r=document.documentElement;
+  const dark=matchMedia('(prefers-color-scheme: dark)').matches;
+  const cur=r.dataset.theme||(dark?'dark':'light');
+  r.dataset.theme=cur==='dark'?'light':'dark';
+  rebuildAll();
+});
+$('#footDate').textContent=D.actualizado;
+selectTab('resumen');
+</script>
+</body>
+</html>

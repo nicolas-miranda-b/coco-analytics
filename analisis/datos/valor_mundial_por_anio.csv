@@ -1,0 +1,4 @@
+anio,valor_exportacion_mundial_usd,fuente,nota
+2018,5900000000,IndexBox (revenue de mercado),Base distinta a valor de comercio; referencial
+2023,6610000000,OEC (HS 1513),Valor de comercio (espejo Comtrade)
+2024,7950000000,OEC (HS 1513),+20.3% interanual; alza impulsada por precio no por volumen

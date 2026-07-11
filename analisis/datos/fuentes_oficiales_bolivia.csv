@@ -1,0 +1,13 @@
+fuente,url,contenido,acceso
+INE - Sistema de consulta COMEX,http://web3.ine.gob.bo:8082/comex/Main,Consulta interactiva por partida NANDINA (1513.11.00 / 1513.19.00): valor CIF y kg por anio y pais de origen,Gratuito en linea (la fuente que pediste revisar)
+INE - Estadisticas de importacion,https://www.ine.gob.bo/index.php/estadisticas-economicas/comercio-exterior/importacion/,Series y cuadros de importaciones; indicadores de comercio exterior,Gratuito (descargas Excel)
+Min. Desarrollo Productivo - COMEX,https://data-bolivia.produccion.gob.bo/comex/,Portal interactivo de comercio exterior actualizado mensualmente,Gratuito en linea
+SIIP - Ranking de productos,https://siip.produccion.gob.bo/repSIIP2/ranking.php?ei=e,Ranking de importaciones/exportaciones por producto,Gratuito en linea
+IBCE - Estadisticas,https://ibce.org.bo/informacion-estadisticas-bolivia.php,Hub de estadisticas de comercio exterior boliviano,Gratuito / consultas a gtecnica@ibce.org.bo
+IBCE - Cifras 2024 (PDF),https://ibce.org.bo/images/publicaciones/CE-326-Cifras-Comercio-Exterior-Boliviano-2024.pdf,Anuario del comercio exterior boliviano 2024,Gratuito (PDF)
+IBCE - Cifras 2025 (PDF),https://ibce.org.bo/images/publicaciones/CE-336-Cifras-Comercio-Exterior-Boliviano-2025.pdf,Anuario del comercio exterior boliviano 2025,Gratuito (PDF)
+OEC - Aceite de coco reporter Bolivia,https://oec.world/es/profile/bilateral-product/coconut-oil/reporter/bol,Pagina bilateral HS 1513 con Bolivia como reportero (datos Comtrade),Gratuito en linea
+TrendEconomy - Bolivia 1513,https://trendeconomy.com/data/h2/Bolivia/1513,Serie anual 2012-2023 de importaciones/exportaciones HS 1513 de Bolivia,Gratuito en linea
+Veritrade - Bolivia 151311,https://www.veritradecorp.com/es/Bolivia/importaciones-y-exportaciones/aceite-de-coco-de-copra-y-sus-fracciones-aceite-en-bruto/151311,Transacciones detalladas por importador (CIF),De pago (suscripcion)
+Nosis - Bolivia 1513,https://trade.nosis.com/es/Comex/Importacion-Exportacion/Bolivia/el-aceite-de-coco--aceites-de-coco-de-copra-de-almendra-de-palma-o-babasuy-sus-fracciones-incluso-re/BO/1513,Comercio exterior de Bolivia partida 1513,Parcialmente de pago
+Volza - Importadores Bolivia HS 1513,https://www.volza.com/p/coconut/buyers/buyers-in-bolivia/hsn-code-1513/,Empresas importadoras bolivianas y numero de envios,Parcial gratuito
