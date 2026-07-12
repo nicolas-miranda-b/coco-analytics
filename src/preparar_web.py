@@ -73,6 +73,8 @@ def main():
             ["empresa", "envios_registrados", "participacion_pct", "nota"]].to_dict("records"),
         "preciosRetail": cargar("precios_bolivia.csv")[
             ["segmento", "precio_bs", "unidad", "equivalente_bs_100ml"]].to_dict("records"),
+        "listings": cargar("competencia_listings_bolivia.csv").to_dict("records"),
+        "senales": cargar("competencia_senales_bolivia.csv").to_dict("records"),
     }
 
     legal = cargar("marco_legal_costos.csv").to_dict("records")
