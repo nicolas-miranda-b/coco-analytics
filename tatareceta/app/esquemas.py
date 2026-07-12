@@ -63,3 +63,16 @@ class UsuarioVer(BaseModel):
     nombre: str
     suscrito_hasta: date | None
     creado: datetime
+
+
+class PagoVer(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    usuario_id: int
+    proveedor: str
+    qr_id: str
+    monto_bs: float
+    dias: int
+    estado: str
+    creado: datetime
+    pagado_en: datetime | None

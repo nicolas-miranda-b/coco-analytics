@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from .. import esquemas
 from ..config import config
 from ..db import obtener_sesion
-from ..modelos import Consulta, Farmacia, Medicamento, Precio, Usuario
+from ..modelos import Consulta, Farmacia, Medicamento, Pago, Precio, Usuario
 from ..motor.normalizacion import normalizar_forma, normalizar_texto
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -77,6 +77,11 @@ def listar_consultas(sesion: Session = Depends(obtener_sesion)):
 @router.get("/usuarios", response_model=list[esquemas.UsuarioVer], dependencies=[Depends(exigir_admin)])
 def listar_usuarios(sesion: Session = Depends(obtener_sesion)):
     return list(sesion.scalars(select(Usuario)))
+
+
+@router.get("/pagos", response_model=list[esquemas.PagoVer], dependencies=[Depends(exigir_admin)])
+def listar_pagos(sesion: Session = Depends(obtener_sesion)):
+    return list(sesion.scalars(select(Pago).order_by(Pago.creado.desc())))
 
 
 @router.post(

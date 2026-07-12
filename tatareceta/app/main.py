@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from .db import crear_tablas
-from .rutas import admin, webhook
+from .rutas import admin, pagos, webhook
 
 
 @asynccontextmanager
@@ -32,6 +32,7 @@ app = FastAPI(
 
 app.include_router(webhook.router)
 app.include_router(admin.router)
+app.include_router(pagos.router)
 
 
 @app.get("/salud", tags=["salud"])

@@ -90,3 +90,23 @@ class Consulta(Base):
     creado: Mapped[datetime] = mapped_column(DateTime, default=_ahora)
 
     usuario: Mapped[Usuario] = relationship(back_populates="consultas")
+
+
+class Pago(Base):
+    """Un QR de cobro emitido para activar/renovar una suscripción."""
+
+    __tablename__ = "pagos"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"), index=True)
+    proveedor: Mapped[str] = mapped_column(String(30))  # bnb | simulado
+    qr_id: Mapped[str] = mapped_column(String(100), unique=True, index=True)
+    monto_bs: Mapped[float] = mapped_column(Float)
+    glosa: Mapped[str] = mapped_column(String(200), default="")
+    dias: Mapped[int] = mapped_column(default=30)  # días de suscripción que compra
+    estado: Mapped[str] = mapped_column(String(20), default="pendiente")  # pendiente|pagado|expirado|error
+    imagen_qr: Mapped[str] = mapped_column(Text, default="")  # PNG en base64
+    creado: Mapped[datetime] = mapped_column(DateTime, default=_ahora)
+    pagado_en: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    usuario: Mapped[Usuario] = relationship()

@@ -18,13 +18,17 @@ tatareceta/
 │   ├── whatsapp.py          # Cliente WhatsApp Cloud API (simulado sin token)
 │   ├── motor/
 │   │   ├── normalizacion.py # ⭐ Núcleo: texto libre → consulta estructurada
-│   │   └── equivalencias.py # Búsqueda de equivalentes + comparación de precios
+│   │   ├── equivalencias.py # Búsqueda de equivalentes + comparación de precios
+│   │   └── ocr.py           # Lectura de recetas por foto (visión de Claude)
 │   ├── importadores/
 │   │   ├── agemed.py        # Importador del registro sanitario de AGEMED
-│   │   └── precios.py       # Importador de precios (CSV/JSON + conector VTEX)
+│   │   ├── precios.py       # Importador de precios (CSV/JSON + conector VTEX)
+│   │   └── navegador.py     # Scraper con Chromium (Hipermaxi, PedidosYa, Chávez)
+│   ├── pagos.py             # QR de cobro: proveedor BNB + simulado
 │   └── rutas/
-│       ├── webhook.py       # GET/POST /webhook (WhatsApp)
-│       └── admin.py         # /admin: catálogo, precios, suscripciones
+│       ├── webhook.py       # GET/POST /webhook (WhatsApp): texto, fotos y suscripción
+│       ├── pagos.py         # /pagos: notificación del banco, imagen QR, verificación
+│       └── admin.py         # /admin: catálogo, precios, usuarios, pagos
 ├── semilla.py               # Datos de ejemplo (ilustrativos)
 ├── tests/
 └── requirements.txt
@@ -68,8 +72,60 @@ python -m pytest tests/ -v
 
 - **Cuota gratuita:** `CONSULTAS_GRATIS` consultas sin pagar (3 por defecto);
   después se invita a suscribirse (Bs 6–9/mes vía QR).
-- **Suscripción (MVP manual):** el pago QR se confirma a mano con
+- **Suscripción automática por QR bancario:** el usuario escribe
+  *"quiero suscribirme"* → se genera un QR de cobro y se le envía por
+  WhatsApp → cuando el banco notifica el pago (`POST /pagos/notificacion`),
+  la suscripción se activa sola y se le confirma por WhatsApp. Respaldo:
+  `POST /pagos/{qr_id}/verificar` consulta el estado directamente al banco.
+- **Proveedores de QR:** `bnb` (Mercado de APIs del Banco Nacional de
+  Bolivia — QR Simple interoperable: el cliente paga desde la app de
+  *cualquier* banco) y `simulado` para desarrollo. Credenciales
+  `BNB_ACCOUNT_ID`/`BNB_AUTHORIZATION_ID` se solicitan al BNB; ambiente de
+  pruebas `http://test.bnb.com.bo`. Las rutas de la API son configurables
+  por si el banco las cambia.
+- **Respaldo manual (MVP):** sigue disponible
   `POST /admin/suscripciones/{telefono}/activar`.
+
+## Recetas por foto (OCR)
+
+Si el usuario manda la **foto de su receta**, el bot la descarga de
+WhatsApp, extrae los medicamentos y responde las equivalencias de cada uno
+(máximo 3 por foto). Proveedores (`OCR_PROVEEDOR`):
+
+- `claude` — visión vía API de Anthropic (entiende letra de médico y
+  devuelve los medicamentos ya estructurados). Requiere `ANTHROPIC_API_KEY`.
+- `simulado` — para desarrollo/tests (`OCR_SIMULADO_TEXTO`).
+- `auto` (defecto) — claude si hay API key; si no hay ninguno, el bot pide
+  amablemente el nombre por texto.
+
+La IA solo **lee** la receta; nunca recomienda tratamientos.
+
+## Scraper de precios con navegador (Hipermaxi, PedidosYa, Chávez)
+
+Para las tiendas sin API (`app/importadores/navegador.py`), se usa Chromium
+headless (Playwright) con **extracción heurística**: encuentra los precios
+"Bs …" visibles y el título más cercano en el DOM, sin depender de
+selectores CSS frágiles. Funciona igual sobre una URL de búsqueda o sobre
+una página guardada con Ctrl+S:
+
+```bash
+pip install playwright   # usa el Chromium del sistema si existe
+
+# Tiendas preconfiguradas (hipermaxi | chavez | pedidosya):
+python -m app.importadores.navegador --tienda hipermaxi --terminos paracetamol,ibuprofeno --solo-mostrar
+python -m app.importadores.navegador --tienda hipermaxi --farmacia "Hipermaxi Online"
+
+# Cualquier otra tienda:
+python -m app.importadores.navegador --url "https://otra-tienda/buscar?q={termino}" --farmacia "Otra"
+
+# Página guardada desde tu navegador (sirve cuando el sitio bloquea bots):
+python -m app.importadores.navegador --html pagina_guardada.html --farmacia "Hipermaxi Online"
+```
+
+Los precios extraídos pasan por el mismo emparejador conservador del
+importador de precios (lo dudoso se descarta y se reporta). Operar con
+respeto: consultas espaciadas y secuenciales, y priorizar acuerdos directos
+con las cadenas cuando el piloto avance.
 
 ## Conexión con WhatsApp (cuando haya credenciales de Meta)
 
@@ -139,7 +195,11 @@ por CSV o construir conectores específicos cuando se valide que vale la pena.
 
 - [x] Importador del catálogo real de AGEMED (registro sanitario).
 - [x] Carga de precios: CSV/JSON manual + conector VTEX (Farmacorp).
-- [ ] Conectores específicos para Chávez, Hipermaxi y PedidosYa (si el piloto lo justifica).
+- [x] Scraper con navegador para Hipermaxi, PedidosYa, Chávez y otras tiendas.
+- [x] Flujo de suscripción con QR bancario (BNB) y activación automática.
+- [x] Lectura de recetas por foto (OCR con visión de Claude).
+- [ ] Validar credenciales reales: API de AGEMED, QR del BNB y WhatsApp Cloud API.
+- [ ] Panel web para farmacias aliadas (modo "solo mi stock").
 - [ ] Lectura de recetas por foto (OCR + IA) — hoy solo texto.
 - [ ] Flujo de suscripción con QR automático.
 - [ ] Panel web para farmacias aliadas (modo "solo mi stock").
