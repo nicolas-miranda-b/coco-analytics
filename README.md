@@ -1,5 +1,7 @@
 # Coco Analytics
 
+**📊 Dashboard en vivo → https://nicolas-miranda-b.github.io/coco-analytics/**
+
 Repositorio del emprendimiento de aceite de coco. Por ahora concentra el **análisis de datos** previo a la producción; más adelante sumará la tecnología del negocio (agentes de IA, dashboards, automatizaciones).
 
 ## Estructura
