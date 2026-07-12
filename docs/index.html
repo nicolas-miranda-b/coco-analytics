@@ -6,6 +6,10 @@
 <title>Cocoil · Aceite de coco en Bolivia — dashboard</title>
 <meta name="description" content="Dashboard del mercado de aceite de coco: importaciones oficiales de Bolivia (INE), contexto global, competencia y marco legal.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥥</text></svg>">
+<meta property="og:title" content="Cocoil · Aceite de coco en Bolivia">
+<meta property="og:description" content="Dashboard del mercado: importaciones oficiales (INE), competencia con precios por ml, simulador de costos, demanda, oferta local y ruta legal.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1E8F58">
 <style>
 :root{
   --surface-1:#fcfcfb; --page:#f9f9f7;
@@ -347,6 +351,7 @@ const secciones=[
  {id:'resumen',nombre:'Resumen'},
  {id:'mundo',nombre:'🌍 Mundo'},
  {id:'bolivia',nombre:'🇧🇴 Bolivia (INE)'},
+ {id:'mercado',nombre:'🌱 Mercado local'},
  {id:'competencia',nombre:'Competencia'},
  {id:'costos',nombre:'🧮 Costos'},
  {id:'legal',nombre:'Legal y fuentes'},
@@ -376,6 +381,23 @@ function buildResumen(root){
   const co=document.createElement('div'); co.className='callout';
   co.textContent='💡 Hallazgo clave: el aceite de coco real llega directo de Asia (Sri Lanka en volumen, Malasia en premium) y vía hubs europeos. El mayor importador (DREAMCO SRL, ~25 % de los envíos) es probablemente la marca "Dream Cos" — y Bolivia importa más cocos secos que aceite. El posicionamiento "producido en Bolivia con coco boliviano" está vacante.';
   root.appendChild(co);
+
+  const h2=document.createElement('h3');
+  h2.textContent='El plan de negocio en 4 números (supuestos base — editables en 🧮 Costos)';
+  h2.style.cssText='font-size:14px;margin:4px 0 10px;color:var(--ink-2)';
+  root.appendChild(h2);
+  const tiles2=document.createElement('div'); tiles2.className='tiles';
+  [
+   {v:'Bs 34.400',k:'Inversión inicial (≈ US$ 4.900)',d:'Prensa + taller + trámites + stock'},
+   {v:'Bs 57.800',k:'Valle de caja — la plata real a financiar',d:'Mayor que la inversión: presupuestá el valle'},
+   {v:'Mes 16',k:'Recuperación de la inversión (payback)',d:'Escenario base; pesimista >24 meses'},
+   {v:'198/mes',k:'Frascos de 200 ml para el equilibrio',d:'~7 por día · notebook 03 y pestaña Costos'},
+  ].forEach(t=>{const d=document.createElement('div'); d.className='tile';
+    const v=document.createElement('div'); v.className='v'; v.textContent=t.v;
+    const k=document.createElement('div'); k.className='k'; k.textContent=t.k;
+    const dd=document.createElement('div'); dd.className='d'; dd.textContent=t.d;
+    d.append(v,k,dd); tiles2.appendChild(d);});
+  root.appendChild(tiles2);
   const g=document.createElement('div'); g.className='grid';
   g.appendChild(card({
     title:'Importaciones de aceite de coco de Bolivia (CIF, US$)',
@@ -538,6 +560,80 @@ function renderBolivia(){
     build:()=>vStack(cocosAnual.map(([a,v])=>({x:a,parts:[{label:'cocos secos',value:v,color:S().s4}]}))),
     table:{head:['Año','US$ CIF'],rows:cocosAnual.map(([a,v])=>[a,fmtN(v)])}
   }));
+}
+
+function buildMercado(root){
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  [
+   {v:'47–116 t',k:'Mercado total estimado por año',d:'Importado (INE 40–100 t) ÷ 86 % importado (tesis UMSA)'},
+   {v:'~2–3 %',k:'Lo que necesitás capturar',d:'Tu rampa tope (650 frascos/mes = 1,6 t/año) cabe 30–70 veces'},
+   {v:'~575 t',k:'Producción local de fruta documentada',d:'Ichilo + Warnes (proyecciones ICE 2020) — tu necesidad es ~3 %'},
+   {v:'San Juan 23',k:'Contacto clave de materia prima',d:'Org. de Mujeres (La Enconada) — comercializa coco con el PAR III'},
+  ].forEach(t=>{const d=document.createElement('div'); d.className='tile';
+    const v=document.createElement('div'); v.className='v'; v.textContent=t.v;
+    const k=document.createElement('div'); k.className='k'; k.textContent=t.k;
+    const dd=document.createElement('div'); dd.className='d'; dd.textContent=t.d;
+    d.append(v,k,dd); tiles.appendChild(d);});
+  root.appendChild(tiles);
+
+  const co=document.createElement('div'); co.className='callout';
+  co.textContent='🔎 Correcciones de la investigación (jul-2026): el Chapare NO tiene coco documentado — el coco boliviano real está en la provincia Ichilo (San Juan de Yapacaní ~384 t/año, Buena Vista, San Carlos) y Warnes. Y el dato "8.250 t de San Juan" que circulaba era una mala lectura: eran quintales. El riesgo del negocio no es el tamaño del mercado ni la materia prima — es la DISTRIBUCIÓN.';
+  root.appendChild(co);
+
+  const g=document.createElement('div'); g.className='grid';
+
+  g.appendChild(card({
+    title:'Embudo del mercado direccionable (t de aceite/año)',
+    note:'Tu objetivo es una fracción chica del mercado — no dependés de que crezca',
+    src:'INE (importaciones oficiales), tesis UMSA (86 % importado, confianza media), notebook 04.',
+    build:()=>hBars([
+      {label:'Mercado total estimado',value:93,extra:'(47–116 t)',color:S().s1,tipLabel:'punto medio del rango'},
+      {label:'Mercado importado (INE)',value:70,extra:'(40–100 t)',color:S().s3,tipLabel:'punto medio del rango'},
+      {label:'Tu rampa tope',value:1.6,extra:'(650 frascos/mes)',color:S().s2,tipLabel:'t/año'},
+    ],{fmt:v=>v.toLocaleString('es-BO')+' t'}),
+    table:{head:['Nivel','t/año'],rows:[['Mercado total estimado','47–116'],['Mercado importado (INE)','40–100'],['Tu rampa tope (650 frascos/mes)','1,6']]}
+  }));
+
+  const ciudades=[
+    {label:'Santa Cruz de la Sierra',value:1.90,extra:'· 63 % del importado',color:S().s1},
+    {label:'La Paz + El Alto',value:1.64,extra:'· solo 8 % — sub-atendida 🎯',color:S().s2},
+    {label:'Cochabamba (Cercado)',value:0.66,extra:'· 27 % del importado',color:S().s3},
+  ];
+  g.appendChild(card({
+    title:'¿Dónde está la demanda? Población vs. cuota del importado',
+    note:'La Paz/El Alto tiene casi la población de Santa Cruz pero recibe solo el 8 % del aceite importado',
+    src:'Censo 2024 (INE) + microdato INE de importaciones por departamento.',
+    build:()=>hBars(ciudades,{fmt:v=>v.toLocaleString('es-BO',{minimumFractionDigits:2})+' M hab.',tipLabel:'población'}),
+    table:{head:['Ciudad','Población','Cuota importado'],rows:[
+      ['Santa Cruz de la Sierra','1.903.398','63 %'],['La Paz + El Alto','1.640.767','8 %'],['Cochabamba (Cercado)','661.484','27 %']]}
+  }));
+
+  const ofe=D.oferta.filter(o=>o.toneladas_anio_aprox!=='' && o.toneladas_anio_aprox>0)
+    .sort((a,b)=>a.toneladas_anio_aprox-b.toneladas_anio_aprox);
+  g.appendChild(card({
+    title:'Oferta local: producción de coco documentada (fruta)',
+    note:'Todo en Santa Cruz. Warnes tiene 20 ha más sin cifra de cosecha',
+    src:'Instituto Cruceño de Estadística (proyecciones 2020, quintales→t). Verificar en la misión de campo.',
+    build:()=>hBars(ofe.map(o=>({label:o.municipio,value:o.toneladas_anio_aprox,
+      extra:o.hectareas?('· '+o.hectareas+' ha'):'',tipLabel:'t de fruta/año'})),
+      {fmt:v=>fmtN(v)+' t',color:S().s4}),
+    table:{head:['Zona','Municipio','ha','t/año','Actores'],rows:D.oferta.map(o=>
+      [o.zona,o.municipio||'—',String(o.hectareas||'—'),String(o.toneladas_anio_aprox||'—'),o.actores||'—'])}
+  }));
+
+  g.appendChild(card({
+    title:'📋 Misión de campo — los 4 datos que faltan',wide:true,
+    note:'Plantillas listas en analisis/campo/ del repositorio; al llenarlas, todo el análisis se recalcula',
+    src:'Notebooks 02–04.',
+    build:()=>mkTable({head:['#','Dato','Dónde conseguirlo','Impacto'],rows:[
+      ['1','Precio del coco puesto en planta','San Juan de Yapacaní (Org. Mujeres San Juan 23) · Nuevo Abasto Sur (km 8 La Guardia)','Domina el 57 % del costo'],
+      ['2','Rendimiento real de tu prensa (ml/coco)','Pruebas con la prensa al llegar (5+ corridas)','2ª variable más sensible'],
+      ['3','Precios de góndola','Hipermaxi (BeCoco 370/720 ml), Ketal, Fidalga','Afina el mapa de competencia'],
+      ['4','Volumen real disponible en Ichilo','Visita a San Juan + EMPODERAR/PAR III','Valida el plan de abastecimiento'],
+    ]}),
+  }));
+
+  root.appendChild(g);
 }
 
 function buildCompetencia(root){
@@ -825,7 +921,7 @@ function buildLegal(root){
 
 /* ---------- shell ---------- */
 const builders={resumen:buildResumen,mundo:buildMundo,bolivia:buildBolivia,
-  competencia:buildCompetencia,costos:buildCostos,legal:buildLegal};
+  mercado:buildMercado,competencia:buildCompetencia,costos:buildCostos,legal:buildLegal};
 const nav=$('#tabs'), main=$('#main');
 const panels={};
 secciones.forEach((s,i)=>{
