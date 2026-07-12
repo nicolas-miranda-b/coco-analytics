@@ -776,6 +776,32 @@ function buildLegal(root){
       rows:D.legal.map(l=>[l.concepto,l.detalle,String(l.valor),l.vigencia])}),
   }));
   g.appendChild(card({
+    title:'Ruta de constitución de la empresa (SRL) — pasos, costos y tiempos',wide:true,
+    note:'SRL "llave en mano": ~Bs 3.400–7.600 en total según estudio jurídico. Alternativa mínima: empresa unipersonal (Bs 130, 100 % virtual). Investigación jul-2026; cifras municipales sin tarifario oficial.',
+    src:'SEPREC (tramite2/costos), Impuestos Nacionales, SENASAG R.A. 042/2023, Populi, estudios jurídicos.',
+    build:()=>mkTable({head:['#','Paso','Entidad','Costo (Bs)','Tiempo','Nota'],
+      rows:D.constitucion.map(c=>[c.orden,c.paso,c.entidad,String(c.costo_bs),c.tiempo,c.nota])}),
+  }));
+  const etiq=[
+   ['Nombre específico','"Aceite de coco VIRGEN" — ojo: el Codex no reconoce "extra virgen" para coco (la competencia lo usa igual)'],
+   ['Ingredientes','En orden decreciente ("aceite de coco virgen 100 %")'],
+   ['Contenido neto','En ml/L (SI), visible'],
+   ['Fabricante','Razón social + dirección de la planta'],
+   ['Origen','"Producido en Bolivia"'],
+   ['Registro + NIT','Nº SENASAG y NIT impresos en la etiqueta'],
+   ['Vencimiento','"Consumir preferentemente hasta…" — indeleble'],
+   ['Lote','Código indeleble'],
+   ['Conservación','"Se solidifica bajo ~24 °C — es normal"'],
+   ['Español','Todo el etiquetado obligatorio en español'],
+   ['Tabla nutricional','NO obligatoria (convencionales) — no incluirla en v1 simplifica la aprobación'],
+  ];
+  g.appendChild(card({
+    title:'Checklist de etiqueta (NB 314001 + SENASAG R.A. 042/2023)',wide:true,
+    note:'Aprobación del modelo: ~Bs 50 por etiqueta, ~5 días. Sello frontal Ley 775: sin reglamento, no se aplica hoy. Detalle completo: analisis/legal/checklist_etiqueta.md',
+    src:'NB 314001 / D.S. 26510 / SENASAG / Codex CXS 210 (investigación jul-2026).',
+    build:()=>mkTable({head:['Elemento','Cómo cumplirlo'],rows:etiq}),
+  }));
+  g.appendChild(card({
     title:'Fuentes oficiales de datos (para actualizar el análisis)',wide:true,
     src:'Verificación propia, julio 2026.',
     build:()=>{

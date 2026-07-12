@@ -78,6 +78,9 @@ def main():
     }
 
     legal = cargar("marco_legal_costos.csv").to_dict("records")
+    constitucion = cargar("constitucion_empresa_pasos.csv").to_dict("records")
+    demanda = cargar("demanda_senales.csv").to_dict("records")
+    oferta = cargar("oferta_coco_zonas.csv").fillna("").to_dict("records")
     fuentes = cargar("fuentes_oficiales_bolivia.csv")[["fuente", "url", "contenido", "acceso"]].to_dict("records")
 
     datos = {
@@ -86,6 +89,9 @@ def main():
         "bolivia": {"aceite": aceite, "cocos": cocos},
         "competencia": competencia,
         "legal": legal,
+        "constitucion": constitucion,
+        "demanda": demanda,
+        "oferta": oferta,
         "fuentes": fuentes,
     }
 
