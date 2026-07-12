@@ -348,6 +348,7 @@ const secciones=[
  {id:'mundo',nombre:'🌍 Mundo'},
  {id:'bolivia',nombre:'🇧🇴 Bolivia (INE)'},
  {id:'competencia',nombre:'Competencia'},
+ {id:'costos',nombre:'🧮 Costos'},
  {id:'legal',nombre:'Legal y fuentes'},
 ];
 
@@ -655,6 +656,111 @@ function buildCompetencia(root){
   root.appendChild(g);
 }
 
+/* ---------- Costos: simulador interactivo ---------- */
+const C={coco:6, rend:120, precio:55, fijos:7000};
+const CFIJO={merma:0.10, frasco200:4.5, etiqueta:1, moL:12, energiaL:3};
+function costoVariable200(){
+  const cocos=(200/C.rend)/(1-CFIJO.merma);
+  return {
+    'Coco (materia prima)': cocos*C.coco,
+    'Frasco + etiqueta': CFIJO.frasco200+CFIJO.etiqueta,
+    'Mano de obra': 0.2*CFIJO.moL,
+    'Energía e insumos': 0.2*CFIJO.energiaL,
+  };
+}
+function buildCostos(root){
+  const intro=document.createElement('div'); intro.className='callout';
+  intro.textContent='🧮 Simulador de costos y punto de equilibrio. Mové los deslizadores con tus números reales — todo se recalcula al instante. Los valores iniciales son los supuestos base del notebook 02 (a validar en campo: el precio del coco y el rendimiento de tu prensa dominan el resultado). Incluye merma 10 %, frasco+etiqueta Bs 5,5, mano de obra Bs 12/L y energía Bs 3/L.';
+  root.appendChild(intro);
+
+  const f=document.createElement('div'); f.className='filters'; f.style.rowGap='10px';
+  const sliders=[
+    ['coco','Precio del coco (Bs/u)',3,12,0.5],
+    ['rend','Rendimiento (ml/coco)',70,180,5],
+    ['precio','Precio de venta 200 ml (Bs)',35,90,1],
+    ['fijos','Fijos mensuales (Bs)',4000,14000,500],
+  ];
+  sliders.forEach(([k,nombre,min,max,paso])=>{
+    const wrap=document.createElement('label');
+    wrap.style.cssText='display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--ink-2);min-width:180px';
+    const cab=document.createElement('span');
+    const val=document.createElement('strong'); val.style.color='var(--ink-1)';
+    val.textContent=' '+C[k].toLocaleString('es-BO');
+    cab.textContent=nombre+':'; cab.appendChild(val);
+    const inp=document.createElement('input');
+    inp.type='range'; inp.min=min; inp.max=max; inp.step=paso; inp.value=C[k];
+    inp.style.accentColor='var(--s1)';
+    inp.addEventListener('input',()=>{C[k]=+inp.value;
+      val.textContent=' '+C[k].toLocaleString('es-BO'); renderCostos();});
+    wrap.append(cab,inp); f.appendChild(wrap);
+  });
+  root.appendChild(f);
+  const tiles=document.createElement('div'); tiles.className='tiles'; tiles.id='tilesCostos';
+  root.appendChild(tiles);
+  const g=document.createElement('div'); g.className='grid'; g.id='gridCostos';
+  root.appendChild(g);
+  const pie=document.createElement('p'); pie.className='src';
+  pie.textContent='Modelo completo, sensibilidad y escenarios: analisis/02_costos_produccion.ipynb en el repositorio. Los supuestos de proceso (merma, envase, mano de obra) se editan allí.';
+  root.appendChild(pie);
+  renderCostos();
+}
+function renderCostos(){
+  const tiles=$('#tilesCostos'), g=$('#gridCostos'); if(!tiles||!g)return;
+  const partes=costoVariable200();
+  const cv=Object.values(partes).reduce((a,b)=>a+b,0);
+  const margen=C.precio-cv;
+  const uEq=margen>0? C.fijos/margen : Infinity;
+  const finite=isFinite(uEq);
+
+  tiles.replaceChildren();
+  [
+   {v:'Bs '+cv.toLocaleString('es-BO',{maximumFractionDigits:1}),k:'Costo variable del frasco 200 ml',d:'Coco = '+Math.round(100*partes['Coco (materia prima)']/cv)+' % del costo'},
+   {v:margen>0? Math.round(100*margen/C.precio)+' %':'—',k:'Margen bruto a Bs '+C.precio,d:margen>0?'Bs '+margen.toLocaleString('es-BO',{maximumFractionDigits:1})+' por frasco':'⚠️ El precio no cubre el costo variable'},
+   {v:finite? Math.round(uEq).toLocaleString('es-BO'):'∞',k:'Frascos/mes para el equilibrio',d:finite? '~'+Math.round(uEq/30)+' por día · '+Math.round(uEq*0.2)+' L/mes':'Subí el precio o bajá costos'},
+   {v:'Bs '+(cv/2).toLocaleString('es-BO',{maximumFractionDigits:1}),k:'Tu costo por 100 ml',d:'vs mediana del mercado Bs 29/100 ml'},
+  ].forEach(t=>{const d=document.createElement('div'); d.className='tile';
+    const v=document.createElement('div'); v.className='v'; v.textContent=t.v;
+    const k=document.createElement('div'); k.className='k'; k.textContent=t.k;
+    const dd=document.createElement('div'); dd.className='d'; dd.textContent=t.d;
+    d.append(v,k,dd); tiles.appendChild(d);});
+
+  g.replaceChildren();
+  // Composición del costo
+  const compColors=[S().s4,S().s3,S().s1,S().s2];
+  g.appendChild(card({
+    title:'¿De qué está hecho el costo del frasco de 200 ml?',
+    src:'Supuestos del simulador + notebook 02.',
+    build:()=>hBars(Object.entries(partes).map(([k,v],i)=>({label:k,value:v,color:compColors[i]})),
+      {fmt:v=>'Bs '+v.toLocaleString('es-BO',{maximumFractionDigits:1}),tipLabel:'por frasco'}),
+    table:{head:['Componente','Bs/frasco'],rows:Object.entries(partes).map(([k,v])=>[k,v.toLocaleString('es-BO',{maximumFractionDigits:2})]).concat([['TOTAL',cv.toLocaleString('es-BO',{maximumFractionDigits:2})]])}
+  }));
+  // Curva de equilibrio
+  const pts=[]; for(let p=Math.ceil((cv+5)/5)*5;p<=90;p+=5)
+    pts.push({label:p,x:p,value:Math.round(C.fijos/(p-cv))});
+  if(pts.length>1) g.appendChild(card({
+    title:'Frascos/mes de equilibrio según el precio de venta (Bs)',
+    note:finite? 'Con tu precio actual (Bs '+C.precio+'): '+Math.round(uEq).toLocaleString('es-BO')+' frascos/mes':'El precio actual no cubre el costo variable',
+    src:'Fijos Bs '+C.fijos.toLocaleString('es-BO')+'/mes (alquiler, sueldo, amortización de prensa, SENASAG).',
+    build:()=>line(pts,{fmt:v=>fmtN(v),color:S().s1,unit:' frascos'}),
+    table:{head:['Precio 200 ml','Frascos/mes'],rows:pts.map(p=>[p.label,fmtN(p.value)])}
+  }));
+  // Posición vs competencia con TU producto insertado
+  const com=D.competencia.listings.filter(l=>!/cosmetico/.test(l.tipo))
+    .map(l=>({label:l.marca+' '+l.ml+' ml',value:l.bs_100ml,tipTitle:l.marca+' — '+l.producto,tipLabel:'por 100 ml (competencia)'}));
+  com.push({label:'▶ TU PRODUCTO 200 ml',value:+(C.precio/2).toFixed(1),color:S().s1,
+    tipTitle:'Tu producto (precio objetivo)',tipLabel:'por 100 ml — tu precio'});
+  com.sort((a,b)=>a.value-b.value);
+  const cPos=card({
+    title:'Tu precio dentro del ranking real de la competencia (Bs/100 ml)',wide:true,
+    note:'La barra verde es tu producto al precio elegido en el simulador — movela con el deslizador de precio',
+    src:'Competencia: relevamiento jul-2026 (18 comestibles). Tu barra: precio del simulador.',
+    build:()=>hBars(com.map(d=>({...d,color:d.color||S().s4})),
+      {fmt:v=>'Bs '+v.toLocaleString('es-BO',{maximumFractionDigits:1})}),
+    table:{head:['Producto','Bs/100 ml'],rows:com.map(d=>[d.label,d.value.toLocaleString('es-BO')])}
+  });
+  g.appendChild(cPos);
+}
+
 function buildLegal(root){
   const co=document.createElement('div'); co.className='callout';
   co.textContent='🎯 Ventana 2026: el DS 5516 ("Arancel Cero") permite importar maquinaria y equipo agroalimentario con 0 % de gravamen arancelario hasta el 31-dic-2026 — aplica a la prensa y embotelladora.';
@@ -690,7 +796,7 @@ function buildLegal(root){
 
 /* ---------- shell ---------- */
 const builders={resumen:buildResumen,mundo:buildMundo,bolivia:buildBolivia,
-  competencia:buildCompetencia,legal:buildLegal};
+  competencia:buildCompetencia,costos:buildCostos,legal:buildLegal};
 const nav=$('#tabs'), main=$('#main');
 const panels={};
 secciones.forEach((s,i)=>{
