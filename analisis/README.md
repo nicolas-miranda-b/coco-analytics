@@ -10,6 +10,10 @@ Análisis de datos del emprendimiento de aceite de coco. El primer estudio es un
 | [`00_resumen_ejecutivo.md`](00_resumen_ejecutivo.md) | Resumen ejecutivo (lectura de 5 min) con hallazgos y recomendaciones. |
 | [`01_analisis_competencia_aceite_coco.ipynb`](01_analisis_competencia_aceite_coco.ipynb) | Notebook completo: contexto global, mercado boliviano, precios, marco legal, materia prima y conclusiones, con gráficos. |
 | [`02_costos_produccion.ipynb`](02_costos_produccion.ipynb) | Costos de producción y punto de equilibrio: costo variable por presentación, posición vs. competencia, sensibilidad (precio del coco y rendimiento) y comparación producir vs. envasar importado. **Paramétrico**: los supuestos se editan en la §2 y todo se recalcula. |
+| [`03_plan_financiero.ipynb`](03_plan_financiero.ipynb) | Plan financiero 24 meses: inversión inicial, flujo de caja con rampa, payback, **valle de caja** (la plata real a financiar) y escenarios. Paramétrico. |
+| [`04_demanda_oferta_local.ipynb`](04_demanda_oferta_local.ipynb) | Demanda (embudo de mercado direccionable, ciudades) y oferta local de coco (mapa real: **Ichilo/Warnes, no Chapare**), con las correcciones de la investigación jul-2026. |
+| [`campo/`](campo/) | **Kit de misión de campo**: checklist + plantillas CSV para relevar precio del coco, rendimiento de prensa y precios de góndola. |
+| [`legal/checklist_etiqueta.md`](legal/checklist_etiqueta.md) | Checklist de etiqueta NB 314001 + SENASAG (qué debe decir tu etiqueta para aprobar a la primera). |
 | `datos/` | Datasets curados en CSV, cada uno con su columna de **fuente**. |
 | `figuras/` | Gráficos exportados por el notebook (PNG). |
 

@@ -53,8 +53,11 @@ pip install -r requirements.txt
 
 - [x] Análisis de competencia e importaciones (aceite de coco en Bolivia) → [`analisis/`](analisis/)
 - [x] Costos de producción y punto de equilibrio → [`analisis/02_costos_produccion.ipynb`](analisis/02_costos_produccion.ipynb)
-- [ ] Análisis de mercado y demanda
-- [ ] Costos de producción y punto de equilibrio
-- [ ] Proveedores y materia prima
-- [ ] Dashboards (cuando haya datos operativos)
+- [x] Plan financiero 24 meses → [`analisis/03_plan_financiero.ipynb`](analisis/03_plan_financiero.ipynb)
+- [x] Demanda y oferta local de coco → [`analisis/04_demanda_oferta_local.ipynb`](analisis/04_demanda_oferta_local.ipynb)
+- [x] Dashboard público con simulador → [`docs/`](docs/)
+- [x] Kit de misión de campo → [`analisis/campo/`](analisis/campo/)
+- [x] Checklist legal (etiqueta + constitución SRL) → [`analisis/legal/`](analisis/legal/) y pestaña Legal del dashboard
+- [ ] Misión de campo (precio del coco en San Juan, rendimiento de la prensa, góndolas)
+- [ ] Certificaciones y marca (registro de marca SENAPI, orgánico)
 - [ ] Agentes de IA (cuando arranque la operación)

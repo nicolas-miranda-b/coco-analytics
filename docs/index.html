@@ -657,7 +657,7 @@ function buildCompetencia(root){
 }
 
 /* ---------- Costos: simulador interactivo ---------- */
-const C={coco:6, rend:120, precio:55, fijos:7000};
+const C={coco:6, rend:120, precio:55, fijos:7000, canal:0};
 const CFIJO={merma:0.10, frasco200:4.5, etiqueta:1, moL:12, energiaL:3};
 function costoVariable200(){
   const cocos=(200/C.rend)/(1-CFIJO.merma);
@@ -679,6 +679,7 @@ function buildCostos(root){
     ['rend','Rendimiento (ml/coco)',70,180,5],
     ['precio','Precio de venta 200 ml (Bs)',35,90,1],
     ['fijos','Fijos mensuales (Bs)',4000,14000,500],
+    ['canal','Descuento a canal/tienda (%)',0,45,5],
   ];
   sliders.forEach(([k,nombre,min,max,paso])=>{
     const wrap=document.createElement('label');
@@ -708,15 +709,16 @@ function renderCostos(){
   const tiles=$('#tilesCostos'), g=$('#gridCostos'); if(!tiles||!g)return;
   const partes=costoVariable200();
   const cv=Object.values(partes).reduce((a,b)=>a+b,0);
-  const margen=C.precio-cv;
+  const neto=C.precio*(1-C.canal/100);   // lo que te queda tras el descuento al canal
+  const margen=neto-cv;
   const uEq=margen>0? C.fijos/margen : Infinity;
   const finite=isFinite(uEq);
 
   tiles.replaceChildren();
   [
    {v:'Bs '+cv.toLocaleString('es-BO',{maximumFractionDigits:1}),k:'Costo variable del frasco 200 ml',d:'Coco = '+Math.round(100*partes['Coco (materia prima)']/cv)+' % del costo'},
-   {v:margen>0? Math.round(100*margen/C.precio)+' %':'—',k:'Margen bruto a Bs '+C.precio,d:margen>0?'Bs '+margen.toLocaleString('es-BO',{maximumFractionDigits:1})+' por frasco':'⚠️ El precio no cubre el costo variable'},
-   {v:finite? Math.round(uEq).toLocaleString('es-BO'):'∞',k:'Frascos/mes para el equilibrio',d:finite? '~'+Math.round(uEq/30)+' por día · '+Math.round(uEq*0.2)+' L/mes':'Subí el precio o bajá costos'},
+   {v:margen>0? Math.round(100*margen/neto)+' %':'—',k:C.canal>0?'Margen sobre tu neto (Bs '+neto.toLocaleString('es-BO',{maximumFractionDigits:1})+' tras canal '+C.canal+'%)':'Margen bruto a Bs '+C.precio,d:margen>0?'Bs '+margen.toLocaleString('es-BO',{maximumFractionDigits:1})+' por frasco':'⚠️ Tu neto no cubre el costo variable'},
+   {v:finite? Math.round(uEq).toLocaleString('es-BO'):'∞',k:'Frascos/mes para el equilibrio',d:finite? '~'+Math.round(uEq/30)+' por día · '+Math.round(uEq*0.2)+' L/mes':'Subí el precio o bajá costos/descuento'},
    {v:'Bs '+(cv/2).toLocaleString('es-BO',{maximumFractionDigits:1}),k:'Tu costo por 100 ml',d:'vs mediana del mercado Bs 29/100 ml'},
   ].forEach(t=>{const d=document.createElement('div'); d.className='tile';
     const v=document.createElement('div'); v.className='v'; v.textContent=t.v;
@@ -735,10 +737,11 @@ function renderCostos(){
     table:{head:['Componente','Bs/frasco'],rows:Object.entries(partes).map(([k,v])=>[k,v.toLocaleString('es-BO',{maximumFractionDigits:2})]).concat([['TOTAL',cv.toLocaleString('es-BO',{maximumFractionDigits:2})]])}
   }));
   // Curva de equilibrio
-  const pts=[]; for(let p=Math.ceil((cv+5)/5)*5;p<=90;p+=5)
-    pts.push({label:p,x:p,value:Math.round(C.fijos/(p-cv))});
+  const kNeto=1-C.canal/100;
+  const pts=[]; for(let p=Math.ceil((cv/kNeto+5)/5)*5;p<=90;p+=5)
+    if(p*kNeto>cv) pts.push({label:p,x:p,value:Math.round(C.fijos/(p*kNeto-cv))});
   if(pts.length>1) g.appendChild(card({
-    title:'Frascos/mes de equilibrio según el precio de venta (Bs)',
+    title:'Frascos/mes de equilibrio según el precio de venta (Bs)'+(C.canal>0?' — con canal '+C.canal+'%':''),
     note:finite? 'Con tu precio actual (Bs '+C.precio+'): '+Math.round(uEq).toLocaleString('es-BO')+' frascos/mes':'El precio actual no cubre el costo variable',
     src:'Fijos Bs '+C.fijos.toLocaleString('es-BO')+'/mes (alquiler, sueldo, amortización de prensa, SENASAG).',
     build:()=>line(pts,{fmt:v=>fmtN(v),color:S().s1,unit:' frascos'}),
@@ -771,6 +774,32 @@ function buildLegal(root){
     src:'SENASAG, IBNORCA, AAI-2026, Bolivia Impuestos.',
     build:()=>mkTable({head:['Concepto','Detalle','Valor','Vigencia'],
       rows:D.legal.map(l=>[l.concepto,l.detalle,String(l.valor),l.vigencia])}),
+  }));
+  g.appendChild(card({
+    title:'Ruta de constitución de la empresa (SRL) — pasos, costos y tiempos',wide:true,
+    note:'SRL "llave en mano": ~Bs 3.400–7.600 en total según estudio jurídico. Alternativa mínima: empresa unipersonal (Bs 130, 100 % virtual). Investigación jul-2026; cifras municipales sin tarifario oficial.',
+    src:'SEPREC (tramite2/costos), Impuestos Nacionales, SENASAG R.A. 042/2023, Populi, estudios jurídicos.',
+    build:()=>mkTable({head:['#','Paso','Entidad','Costo (Bs)','Tiempo','Nota'],
+      rows:D.constitucion.map(c=>[c.orden,c.paso,c.entidad,String(c.costo_bs),c.tiempo,c.nota])}),
+  }));
+  const etiq=[
+   ['Nombre específico','"Aceite de coco VIRGEN" — ojo: el Codex no reconoce "extra virgen" para coco (la competencia lo usa igual)'],
+   ['Ingredientes','En orden decreciente ("aceite de coco virgen 100 %")'],
+   ['Contenido neto','En ml/L (SI), visible'],
+   ['Fabricante','Razón social + dirección de la planta'],
+   ['Origen','"Producido en Bolivia"'],
+   ['Registro + NIT','Nº SENASAG y NIT impresos en la etiqueta'],
+   ['Vencimiento','"Consumir preferentemente hasta…" — indeleble'],
+   ['Lote','Código indeleble'],
+   ['Conservación','"Se solidifica bajo ~24 °C — es normal"'],
+   ['Español','Todo el etiquetado obligatorio en español'],
+   ['Tabla nutricional','NO obligatoria (convencionales) — no incluirla en v1 simplifica la aprobación'],
+  ];
+  g.appendChild(card({
+    title:'Checklist de etiqueta (NB 314001 + SENASAG R.A. 042/2023)',wide:true,
+    note:'Aprobación del modelo: ~Bs 50 por etiqueta, ~5 días. Sello frontal Ley 775: sin reglamento, no se aplica hoy. Detalle completo: analisis/legal/checklist_etiqueta.md',
+    src:'NB 314001 / D.S. 26510 / SENASAG / Codex CXS 210 (investigación jul-2026).',
+    build:()=>mkTable({head:['Elemento','Cómo cumplirlo'],rows:etiq}),
   }));
   g.appendChild(card({
     title:'Fuentes oficiales de datos (para actualizar el análisis)',wide:true,

@@ -1,0 +1,10 @@
+orden,paso,entidad,costo_bs,tiempo,nota,confianza
+1,Control de homonimia / reserva de nombre,SEPREC (en linea),0,3-20 dias habiles,Gratis; reserva 3 dias (unipersonal) o 20 (sociedades),alta
+2,Minuta + escritura publica de constitucion,Abogado + Notaria,500-1500,3-7 dias,Solo para SRL; la unipersonal no la necesita,media
+3,Inscripcion SRL + matricula de comercio,SEPREC (Tramite 2),455 + 192,1-10 dias habiles,Bs 455 inscripcion + Bs 192 Gaceta Electronica. Alternativa: unipersonal Bs 130 (100% virtual ~24h),alta
+4,Renovacion anual de matricula,SEPREC (Tramite 10),455 (SRL) / 260 (unipersonal),24 h,Costo recurrente anual,alta
+5,NIT regimen general,Impuestos Nacionales,0,dias,Gratuito; registro web + huellas/foto presencial,alta
+6,Licencia de funcionamiento,Gobierno Municipal,~655 (SCZ) / ~55-100 (CBBA),24 h (SCZ digital),Cifras no oficiales (Populi / sitios); confirmar en el municipio,baja
+7,Registro sanitario SENASAG,SENASAG,500 (artesanal) - 1600 (industrial),24-60 dias,Por 2 anios + analisis de producto y agua a cargo de la empresa; incluye inspeccion de planta,alta
+8,Aprobacion del modelo de etiqueta,SENASAG,50 por etiqueta,~5 dias,Bajo R.A. 042/2023; tarifa 2018 a confirmar,media
+9,Carnet sanitario manipuladores,SEDES / municipio,25 + examenes,2-3 dias,Por trabajador; renovacion periodica (3-12 meses segun municipio),media
