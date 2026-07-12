@@ -52,6 +52,7 @@ pip install -r requirements.txt
 ## Roadmap
 
 - [x] Análisis de competencia e importaciones (aceite de coco en Bolivia) → [`analisis/`](analisis/)
+- [x] Costos de producción y punto de equilibrio → [`analisis/02_costos_produccion.ipynb`](analisis/02_costos_produccion.ipynb)
 - [ ] Análisis de mercado y demanda
 - [ ] Costos de producción y punto de equilibrio
 - [ ] Proveedores y materia prima

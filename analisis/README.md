@@ -9,6 +9,7 @@ Análisis de datos del emprendimiento de aceite de coco. El primer estudio es un
 |---|---|
 | [`00_resumen_ejecutivo.md`](00_resumen_ejecutivo.md) | Resumen ejecutivo (lectura de 5 min) con hallazgos y recomendaciones. |
 | [`01_analisis_competencia_aceite_coco.ipynb`](01_analisis_competencia_aceite_coco.ipynb) | Notebook completo: contexto global, mercado boliviano, precios, marco legal, materia prima y conclusiones, con gráficos. |
+| [`02_costos_produccion.ipynb`](02_costos_produccion.ipynb) | Costos de producción y punto de equilibrio: costo variable por presentación, posición vs. competencia, sensibilidad (precio del coco y rendimiento) y comparación producir vs. envasar importado. **Paramétrico**: los supuestos se editan en la §2 y todo se recalcula. |
 | `datos/` | Datasets curados en CSV, cada uno con su columna de **fuente**. |
 | `figuras/` | Gráficos exportados por el notebook (PNG). |
 
