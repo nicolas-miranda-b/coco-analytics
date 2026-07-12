@@ -18,6 +18,7 @@ coco-analytics/
 │   ├── raw/          # Datos crudos (no se versionan; microdato INE viene del Drive)
 │   └── processed/    # Datos procesados (no se versionan)
 ├── src/              # Código reutilizable (estilo, preparar_ine.py, preparar_web.py)
+├── tatareceta/       # 💊 TataReceta: asistente WhatsApp de medicamentos equivalentes (ver su README)
 └── requirements.txt  # Dependencias de Python
 ```
 
