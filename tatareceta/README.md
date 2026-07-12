@@ -20,7 +20,8 @@ tatareceta/
 │   │   ├── normalizacion.py # ⭐ Núcleo: texto libre → consulta estructurada
 │   │   └── equivalencias.py # Búsqueda de equivalentes + comparación de precios
 │   ├── importadores/
-│   │   └── agemed.py        # Importador del registro sanitario de AGEMED
+│   │   ├── agemed.py        # Importador del registro sanitario de AGEMED
+│   │   └── precios.py       # Importador de precios (CSV/JSON + conector VTEX)
 │   └── rutas/
 │       ├── webhook.py       # GET/POST /webhook (WhatsApp)
 │       └── admin.py         # /admin: catálogo, precios, suscripciones
@@ -104,10 +105,41 @@ campos separados, detecta genéricos y hace *upsert* por número de registro
 sanitario (reimportar no duplica). Los registros sin datos suficientes para
 establecer equivalencia se descartan y se informan.
 
+## Importar precios de farmacias
+
+```bash
+cd tatareceta
+# Desde un CSV/JSON relevado a mano (columnas: producto, precio [, farmacia]):
+python -m app.importadores.precios --archivo precios.csv --farmacia "Farmacorp Online"
+
+# Directo desde una tienda VTEX (Farmacorp usa esa plataforma):
+python -m app.importadores.precios --vtex https://www.farmacorp.com --farmacia "Farmacorp Online"
+# Por defecto busca todos los principios activos del catálogo; se puede acotar:
+python -m app.importadores.precios --vtex https://www.farmacorp.com --farmacia "Farmacorp Online" --terminos amoxicilina,ibuprofeno
+```
+
+Cómo funciona:
+
+- **Emparejamiento conservador** contra el catálogo: el nombre comercial o el
+  principio activo debe aparecer en el título del producto, y si ambos declaran
+  concentración deben coincidir. Ante ambigüedad, el producto se **descarta y
+  se reporta** para revisión manual — un precio mal asignado es peor que uno
+  faltante.
+- Detecta la **presentación** ("caja x 100", "blister x 10") y el asistente
+  compara y ordena por **precio unitario**, mostrando ambos valores.
+- Acepta precios en formato boliviano ("Bs 320,50").
+- Reimportar actualiza los precios existentes (no duplica).
+
+Estado de las fuentes (julio 2026): Farmacorp corre sobre **VTEX** (conector
+incluido); Farmacias Chávez (`online.farmaciachavez.com.bo`), Hipermaxi y
+PedidosYa no exponen API documentada — para esas, usar el relevamiento manual
+por CSV o construir conectores específicos cuando se valide que vale la pena.
+
 ## Próximos pasos técnicos (según roadmap)
 
 - [x] Importador del catálogo real de AGEMED (registro sanitario).
-- [ ] Relevamiento/carga de precios de Farmacorp, Chávez, Hipermaxi, PedidosYa.
+- [x] Carga de precios: CSV/JSON manual + conector VTEX (Farmacorp).
+- [ ] Conectores específicos para Chávez, Hipermaxi y PedidosYa (si el piloto lo justifica).
 - [ ] Lectura de recetas por foto (OCR + IA) — hoy solo texto.
 - [ ] Flujo de suscripción con QR automático.
 - [ ] Panel web para farmacias aliadas (modo "solo mi stock").

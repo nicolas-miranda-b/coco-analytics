@@ -1,5 +1,6 @@
 """Búsqueda de medicamentos, equivalentes y comparación de precios."""
 
+import re
 from dataclasses import dataclass
 from difflib import get_close_matches
 
@@ -16,6 +17,16 @@ class OpcionPrecio:
     farmacia_nombre: str
     precio_bs: float
     unidad_venta: str
+
+    @property
+    def unidades(self) -> int:
+        """Cantidad de unidades del envase ('caja x 100' → 100)."""
+        coincidencia = re.search(r"x\s*(\d+)", self.unidad_venta)
+        return int(coincidencia.group(1)) if coincidencia else 1
+
+    @property
+    def precio_unitario(self) -> float:
+        return self.precio_bs / self.unidades
 
 
 @dataclass
@@ -103,7 +114,7 @@ def opciones_de_precio(
         )
         for p in precios
     ]
-    return sorted(opciones, key=lambda o: o.precio_bs)
+    return sorted(opciones, key=lambda o: o.precio_unitario)
 
 
 AVISO_LEGAL = (
@@ -139,18 +150,22 @@ def responder_consulta(sesion: Session, texto: str) -> ResultadoConsulta:
         lineas.append(f"Encontré {len(opciones)} opción(es) con el mismo principio activo:")
         for i, op in enumerate(opciones[:5], start=1):
             etiqueta = " (genérico)" if op.medicamento.es_generico else ""
+            detalle = f"Bs {op.precio_bs:.2f} por {op.unidad_venta}"
+            if op.unidades > 1:
+                detalle += f" (Bs {op.precio_unitario:.2f} c/u)"
             lineas.append(
                 f"{i}. {op.medicamento.nombre_comercial}{etiqueta} — "
-                f"Bs {op.precio_bs:.2f} por {op.unidad_venta} 📍 {op.farmacia_nombre}"
+                f"{detalle} 📍 {op.farmacia_nombre}"
             )
-        precio_referencia = max(
-            (o.precio_bs for o in opciones if o.medicamento.id == medicamento.id),
+        # Ahorro comparado en precio POR UNIDAD (los envases pueden diferir)
+        referencia_unitaria = max(
+            (o.precio_unitario for o in opciones if o.medicamento.id == medicamento.id),
             default=None,
         )
-        if precio_referencia is not None and opciones[0].precio_bs < precio_referencia:
-            ahorro = precio_referencia - opciones[0].precio_bs
+        if referencia_unitaria is not None and opciones[0].precio_unitario < referencia_unitaria:
+            ahorro = referencia_unitaria - opciones[0].precio_unitario
             lineas.append("")
-            lineas.append(f"💰 Ahorro potencial: *Bs {ahorro:.2f}* por {opciones[0].unidad_venta}.")
+            lineas.append(f"💰 Ahorro potencial: *Bs {ahorro:.2f}* por unidad.")
     elif equivalentes:
         lineas.append("Existen equivalentes registrados, pero aún no tengo precios cargados.")
     else:
