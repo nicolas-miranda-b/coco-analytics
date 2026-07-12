@@ -43,6 +43,8 @@ y guarda las figuras en `figuras/`.
 | `empresas_importadoras_bolivia.csv` | Importadores bolivianos registrados en aduana (HS 1513) | Volza |
 | `fuentes_oficiales_bolivia.csv` | Directorio de fuentes oficiales (INE COMEX, IBCE, etc.) con URLs y tipo de acceso | Verificación propia |
 | `competencia_marcas_bolivia.csv` | Marcas/competidores en Bolivia | Relevamiento web |
+| `competencia_listings_bolivia.csv` | Productos concretos con precio, tamaño y **Bs/100ml** por canal (tiendas propias, e-shops, PedidosYa, clasificados) | Relevamiento web jul-2026 |
+| `competencia_senales_bolivia.csv` | Señales de venta/presencia digital (likes, seguidores, canales) | Facebook/Instagram/TikTok jul-2026 |
 | `precios_bolivia.csv` | Precios de retail en Bolivia | Selina Wamucii, CaliFrut, listados |
 | `marco_legal_costos.csv` | Requisitos y costos legales (SENASAG, IBNORCA, aranceles) | SENASAG, IBNORCA, AAI-2026 |
 

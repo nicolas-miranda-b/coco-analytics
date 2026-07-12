@@ -160,18 +160,55 @@ function hBars(items,{fmt=fmtUSD, color, unit='', tipLabel='valor'}={}){
   const max=Math.max(...items.map(d=>d.value),1);
   const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
   items.forEach((d,i)=>{
+    const cc=d.color||c;
     const y=i*rowH+4, bw=Math.max(2,(d.value/max)*(W-padL-padR-170));
     const g=el('g',{});
     const lab=el('text',{x:padL,y:y+15,fill:S().ink2,'font-size':'12.5'});
     lab.textContent=d.label.length>23? d.label.slice(0,22).trimEnd()+'…' : d.label;
-    const r=el('rect',{x:padL+170,y:y,width:bw,height:20,rx:4,fill:c});
+    const r=el('rect',{x:padL+170,y:y,width:bw,height:20,rx:4,fill:cc});
     const val=el('text',{x:padL+170+bw+7,y:y+15,fill:S().ink2,'font-size':'12','font-weight':'600'});
     val.textContent=fmt(d.value)+(d.extra?('  '+d.extra):'');
     const hit=el('rect',{x:0,y:y-2,width:W,height:rowH-6,fill:'transparent'});
     hit.addEventListener('pointermove',ev=>{r.setAttribute('opacity','.82');
-      showTip(ev,d.label,[{color:c,value:fmt(d.value)+unit,label:tipLabel}]);});
+      showTip(ev,d.tipTitle||d.label,[{color:cc,value:fmt(d.value)+unit,label:d.tipLabel||tipLabel}]);});
     hit.addEventListener('pointerleave',()=>{r.setAttribute('opacity','1');hideTip();});
     g.append(lab,r,val,hit); svg.appendChild(g);
+  });
+  return svg;
+}
+
+/* Multi-series line: series=[{name,color,pts:[{x,y}]}], linear x axis */
+function multiLine(series,{fmtY=v=>String(v), fmtX=v=>String(v), xTicks=[]}={}){
+  const W=620,H=270,padL=52,padB=34,padT=14,padR=88;
+  const allPts=series.flatMap(s=>s.pts);
+  const maxY=niceMax(Math.max(...allPts.map(p=>p.y))*1.08);
+  const maxX=Math.max(...allPts.map(p=>p.x)), minX=Math.min(...allPts.map(p=>p.x));
+  const X=v=>padL+(W-padL-padR)*(v-minX)/((maxX-minX)||1);
+  const Y=v=>H-padB-(H-padB-padT)*v/maxY;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  for(let i=0;i<=4;i++){const v=maxY*i/4;
+    svg.appendChild(el('line',{x1:padL,x2:W-padR+60,y1:Y(v),y2:Y(v),stroke:S().grid,'stroke-width':1}));
+    const t=el('text',{x:padL-6,y:Y(v)+4,fill:S().ink3,'font-size':'11','text-anchor':'end'});
+    t.textContent=fmtY(v); svg.appendChild(t);}
+  (xTicks.length?xTicks:[minX,maxX]).forEach(v=>{
+    const t=el('text',{x:X(v),y:H-padB+16,fill:S().ink3,'font-size':'10.5','text-anchor':'middle'});
+    t.textContent=fmtX(v); svg.appendChild(t);});
+  svg.appendChild(el('line',{x1:padL,x2:W-padR+60,y1:H-padB,y2:H-padB,stroke:S().axis,'stroke-width':1}));
+  series.forEach(s=>{
+    const pts=[...s.pts].sort((a,b)=>a.x-b.x);
+    svg.appendChild(el('path',{d:pts.map((p,i)=>(i?'L':'M')+X(p.x)+','+Y(p.y)).join(' '),
+      fill:'none',stroke:s.color,'stroke-width':2,'stroke-linejoin':'round'}));
+    pts.forEach(p=>{
+      svg.appendChild(el('circle',{cx:X(p.x),cy:Y(p.y),r:4.5,fill:s.color,stroke:'var(--surface-1)','stroke-width':2}));
+      const hit=el('circle',{cx:X(p.x),cy:Y(p.y),r:14,fill:'transparent'});
+      hit.addEventListener('pointermove',ev=>showTip(ev,s.name+' · '+fmtX(p.x),
+        [{color:s.color,value:fmtY(p.y),label:'por 100 ml'},{color:S().ink3,value:'Bs '+fmtN(p.precio),label:'precio del envase'}]));
+      hit.addEventListener('pointerleave',hideTip);
+      svg.appendChild(hit);
+    });
+    const last=pts[pts.length-1];
+    const lt=el('text',{x:X(last.x)+9,y:Y(last.y)+4,fill:s.color,'font-size':'11.5','font-weight':'700'});
+    lt.textContent=s.name; svg.appendChild(lt);
   });
   return svg;
 }
@@ -503,7 +540,92 @@ function renderBolivia(){
 }
 
 function buildCompetencia(root){
+  const L=D.competencia.listings;
+  const comestibles=L.filter(l=>!/cosmetico/.test(l.tipo));
+  const vals=comestibles.map(l=>l.bs_100ml).sort((a,b)=>a-b);
+  const mediana=vals[Math.floor(vals.length/2)];
+
+  // Tiles de síntesis
+  const tiles=document.createElement('div'); tiles.className='tiles';
+  [
+   {v:'Bs '+mediana.toLocaleString('es-BO'),k:'Mediana del precio por 100 ml (comestible)',d:vals.length+' productos relevados con precio'},
+   {v:'Bs '+vals[0].toLocaleString('es-BO')+'–'+Math.round(vals[vals.length-1]),k:'Rango por 100 ml',d:'Copra (Brasil) el más barato · Moi el más caro'},
+   {v:'BeCoco',k:'La marca más distribuida',d:'Hipermaxi, Amarket, CaliFrut, Sumer · 11,7k likes FB'},
+   {v:'0 listados',k:'Aceite de coco en Mercado Libre Bolivia',d:'Canal prácticamente vacío = oportunidad'},
+  ].forEach(t=>{const d=document.createElement('div'); d.className='tile';
+    const v=document.createElement('div'); v.className='v'; v.textContent=t.v;
+    const k=document.createElement('div'); k.className='k'; k.textContent=t.k;
+    const dd=document.createElement('div'); dd.className='d'; dd.textContent=t.d;
+    d.append(v,k,dd); tiles.appendChild(d);});
+  root.appendChild(tiles);
+
+  const co=document.createElement('div'); co.className='callout';
+  co.textContent='💡 Hallazgos del relevamiento: (1) BeCoco — el líder de distribución — declara en Amarket que su producto se produce en Costa Rica: el "local" líder también es importado. (2) El importado brasileño Copra vende a Bs 11,6/100 ml, menos de la mitad que los artesanales locales (Bs 24–47/100 ml) — es el precio a vigilar. (3) Mercado Libre Bolivia está vacío y los supermercados online (Hipermaxi/Ketal) apenas lo listan: la venta pasa por tiendas propias, WhatsApp y redes.';
+  root.appendChild(co);
+
   const g=document.createElement('div'); g.className='grid';
+  const GRUPO={'Tienda propia':0,'E-shop especializada':1,'Supermercado/farmacia':2,'Delivery app':2,'Clasificados/redes':3};
+  const GNOM=['Tienda propia de marca','E-shop especializada','Supermercado / farmacia / delivery','Clasificados / redes'];
+  const gcolor=i=>[S().s1,S().s3,S().s2,S().s4][i];
+
+  // Gráfico principal: Bs/100ml por producto
+  const cPrecio=card({
+    title:'Precio por 100 ml — todos los productos relevados',wide:true,
+    note:'Ordenado de más barato a más caro · el color indica el canal de venta · incluye comestibles, MCT y cosméticos (ver tipo en tooltip/tabla) · julio 2026',
+    src:'Relevamiento web: tiendas propias, Mercado Verde, Sumer, PedidosYa, Amarket, compro.bo, Evisos. Precios direccionales.',
+    build:()=>{
+      const items=[...L].sort((a,b)=>a.bs_100ml-b.bs_100ml).map(l=>({
+        label:l.marca+' '+l.ml+' ml',
+        tipTitle:l.marca+' — '+l.producto,
+        value:l.bs_100ml,
+        color:gcolor(GRUPO[l.grupo_canal]??1),
+        extra:'(Bs '+l.precio_bs.toLocaleString('es-BO')+')',
+        tipLabel:'por 100 ml · '+l.grupo_canal+' · '+l.tipo,
+      }));
+      return hBars(items,{fmt:v=>'Bs '+v.toLocaleString('es-BO',{maximumFractionDigits:1})});
+    },
+    table:{head:['Marca','Producto','ml','Precio Bs','Bs/100ml','Tipo','Canal','Ciudad','Confianza'],
+      rows:[...L].sort((a,b)=>a.bs_100ml-b.bs_100ml).map(l=>
+        [l.marca,l.producto,fmtN(l.ml),l.precio_bs.toLocaleString('es-BO'),l.bs_100ml.toLocaleString('es-BO'),l.tipo,l.canal,l.ciudad,l.confianza])}
+  });
+  cPrecio.insertBefore(legend(GNOM.map((n,i)=>({label:n,color:gcolor(i)}))),cPrecio.children[2]);
+  g.appendChild(cPrecio);
+
+  // Curva precio vs tamaño
+  g.appendChild(card({
+    title:'El precio por 100 ml cae con el tamaño del envase',
+    note:'Escalera de precios de las 3 marcas con más presentaciones — el envase grande es 40–50 % más barato por ml',
+    src:'dreamcosrl.com, CaliFrut, Mercado Verde (jul-2026).',
+    build:()=>{
+      const serie=(nombre,patron,color)=>({name:nombre,color,
+        pts:comestibles.filter(l=>new RegExp(patron).test(l.marca)&&!/MCT/.test(l.producto))
+          .map(l=>({x:l.ml,y:l.bs_100ml,precio:l.precio_bs}))});
+      return multiLine([
+        serie('Gaia Terra','^Gaia',S().s2),
+        serie('BeCoco','^BeCoco( \\(CaliFrut\\))?$',S().s1),
+        serie('Copra','^Copra',S().s3),
+      ],{fmtY:v=>'Bs '+v.toLocaleString('es-BO',{maximumFractionDigits:0}),
+         fmtX:v=>fmtN(v)+' ml', xTicks:[60,200,400,720,1000]});
+    },
+    table:{head:['Marca','ml','Precio Bs','Bs/100ml'],
+      rows:comestibles.filter(l=>/^(Gaia|BeCoco \(|Copra)/.test(l.marca)&&!/MCT/.test(l.producto))
+        .sort((a,b)=>a.marca.localeCompare(b.marca)||a.ml-b.ml)
+        .map(l=>[l.marca,fmtN(l.ml),l.precio_bs.toLocaleString('es-BO'),l.bs_100ml.toLocaleString('es-BO')])}
+  }));
+
+  // Señales de popularidad
+  const senRedes=D.competencia.senales.filter(s=>/Likes|Seguidores/.test(s.senal));
+  g.appendChild(card({
+    title:'Señales de venta y presencia digital',
+    note:'No hay cifras públicas de ventas; likes/seguidores son el mejor proxy disponible',
+    src:'Facebook, Instagram (jul-2026). Mercado Libre BO: 0 listados indexados.',
+    build:()=>hBars(senRedes.map(s=>({label:s.quien,value:s.valor,
+      tipTitle:s.quien+' — '+s.senal,tipLabel:s.senal.toLowerCase()})),
+      {fmt:v=>fmtN(v),color:S().s4}),
+    table:{head:['Quién','Señal','Valor','Detalle'],
+      rows:D.competencia.senales.map(s=>[s.quien,s.senal,fmtN(s.valor),s.detalle])}
+  }));
+
   const imp=D.competencia.importadores.filter(i=>i.empresa!=='Otros');
   g.appendChild(card({
     title:'Importadores directos registrados en aduana (HS 1513)',
