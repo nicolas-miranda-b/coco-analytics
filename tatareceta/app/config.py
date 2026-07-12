@@ -43,7 +43,10 @@ class Config:
     # --- OCR de recetas ---
     ocr_proveedor: str = field(default_factory=lambda: _env("OCR_PROVEEDOR", "auto"))
     anthropic_api_key: str = field(default_factory=lambda: _env("ANTHROPIC_API_KEY"))
-    ocr_modelo: str = field(default_factory=lambda: _env("OCR_MODELO", "claude-haiku-4-5-20251001"))
+    # Leer recetas manuscritas es la tarea de visión más difícil y un error acá
+    # es peligroso: por defecto el modelo más capaz; cambiar por env si se
+    # prefiere optimizar costo (ej. claude-haiku-4-5).
+    ocr_modelo: str = field(default_factory=lambda: _env("OCR_MODELO", "claude-opus-4-8"))
     ocr_simulado_texto: str = field(default_factory=lambda: _env("OCR_SIMULADO_TEXTO"))
 
 
