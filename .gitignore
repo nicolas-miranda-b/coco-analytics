@@ -27,3 +27,7 @@ Thumbs.db
 # Salidas temporales
 *.tmp
 ~$*
+
+# TataReceta (backend)
+*.db
+.pytest_cache/
