@@ -19,6 +19,8 @@ tatareceta/
 │   ├── motor/
 │   │   ├── normalizacion.py # ⭐ Núcleo: texto libre → consulta estructurada
 │   │   └── equivalencias.py # Búsqueda de equivalentes + comparación de precios
+│   ├── importadores/
+│   │   └── agemed.py        # Importador del registro sanitario de AGEMED
 │   └── rutas/
 │       ├── webhook.py       # GET/POST /webhook (WhatsApp)
 │       └── admin.py         # /admin: catálogo, precios, suscripciones
@@ -76,9 +78,35 @@ python -m pytest tests/ -v
    `WEBHOOK_VERIFY_TOKEN` del `.env`.
 3. Listo: los mensajes entrantes se responden automáticamente.
 
+## Importar el catálogo de AGEMED
+
+Fuentes oficiales identificadas (julio 2026):
+
+- **API pública:** `https://apiwww.agemed.gob.bo/api/listautcom` — "listado
+  oficial diario de registros sanitarios aprobados".
+- **Sistema de consulta:** `https://regsanitario.agemed.gob.bo/`
+- **Portal:** `https://www.agemed.gob.bo/` (también publica listas de precios
+  referenciales de medicamentos).
+
+```bash
+cd tatareceta
+# Directo desde la API (necesita internet hacia agemed.gob.bo):
+python -m app.importadores.agemed --url
+
+# O desde un archivo JSON/CSV descargado a mano:
+python -m app.importadores.agemed --archivo registros.json
+```
+
+El importador tolera variantes en los nombres de campos (mayúsculas, acentos,
+sinónimos como `producto`/`nombre_comercial`, `generico`/`principio_activo`),
+extrae concentración y forma del nombre del producto cuando no vienen como
+campos separados, detecta genéricos y hace *upsert* por número de registro
+sanitario (reimportar no duplica). Los registros sin datos suficientes para
+establecer equivalencia se descartan y se informan.
+
 ## Próximos pasos técnicos (según roadmap)
 
-- [ ] Importador del catálogo real de AGEMED (registro sanitario).
+- [x] Importador del catálogo real de AGEMED (registro sanitario).
 - [ ] Relevamiento/carga de precios de Farmacorp, Chávez, Hipermaxi, PedidosYa.
 - [ ] Lectura de recetas por foto (OCR + IA) — hoy solo texto.
 - [ ] Flujo de suscripción con QR automático.
