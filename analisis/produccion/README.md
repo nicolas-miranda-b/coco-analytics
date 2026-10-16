@@ -13,8 +13,10 @@ Tres tablas: `lotes.csv` (una fila por lote de cocos, de la recepción a la pulp
 | Triturar / rallar | `min_triturar` |
 | Secado (si se seca antes de prensar) | `peso_pulpa_seca_kg`, `secado_metodo`, `secado_temp_c`, `secado_min` |
 | General del lote | `personas`, `prensado_id`, `notas` |
-| Prensado (`prensados.csv`) | `lotes`, `n_cocos`, `peso_pulpa_kg`, `min_prensar`, `temp_max_aceite_c`, `aceite_bruto_ml`, `torta_g` |
-| Decantado 24 h y filtrado (`prensados.csv`) | `aceite_filtrado_ml` |
+| Prensado (`prensados.csv`) | `lotes`, `n_cocos`, `peso_pulpa_kg`, `min_prensado`, `temp_max_aceite_c`, `leche_g` (lo que sale de la prensa hidráulica al prensar pulpa fresca: emulsión de aceite y agua), `aceite_bruto_ml` (si sale aceite directo, con pulpa seca), `torta_g` |
+| Decantado 24 h y filtrado (`prensados.csv`) | `aceite_filtrado_ml` (el aceite separado de la leche, ya filtrado) |
+
+Prensa: hidráulica de 20 t con jaula perforada de acero inoxidable.
 
 ## Indicadores que salen de aquí
 - Cocos por litro (meta ≤ 15) = `n_cocos` / `aceite_filtrado_ml` × 1000
