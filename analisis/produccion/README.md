@@ -8,7 +8,7 @@ Una fila por lote en `lotes.csv` y una fila por coco en `cocos.csv` (opcional, c
 | Etapa | Columnas |
 | --- | --- |
 | Recepción | `origen_cocos`, `proveedor`, `precio_bs_coco`, `n_cocos`, `n_cocos_malos`, `peso_cocos_kg` (enteros, sin tara) |
-| Abrir y drenar | `agua_ml`, `min_abrir_drenar` |
+| Abrir y drenar | `agua_g` (pesada en balanza), `min_abrir_drenar` |
 | Despulpar | `peso_pulpa_kg` (pulpa blanca, sin cáscara), `min_despulpar` |
 | Triturar / rallar | `min_triturar` |
 | Secado (si se seca antes de prensar) | `peso_pulpa_seca_kg`, `secado_metodo`, `secado_temp_c`, `secado_min` |

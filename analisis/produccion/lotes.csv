@@ -1,2 +1,2 @@
-lote_id,fecha,producto,origen_cocos,proveedor,precio_bs_coco,n_cocos,n_cocos_malos,peso_cocos_kg,agua_ml,peso_pulpa_kg,peso_pulpa_seca_kg,secado_metodo,secado_temp_c,secado_min,min_abrir_drenar,min_despulpar,min_triturar,min_prensar,temp_max_aceite_c,aceite_bruto_ml,torta_g,aceite_filtrado_ml,personas,notas
-L20261015-01,2026-10-15,coco,,,,5,,2.945,,,,,,,,,,,,,,,,Prueba de calibración de la prensa. Peso de los 5 cocos enteros en bowl de acero (verificar si se descontó la tara)
+lote_id,fecha,producto,origen_cocos,proveedor,precio_bs_coco,n_cocos,n_cocos_malos,peso_cocos_kg,agua_g,peso_pulpa_kg,peso_pulpa_seca_kg,secado_metodo,secado_temp_c,secado_min,min_abrir_drenar,min_despulpar,min_triturar,min_prensar,temp_max_aceite_c,aceite_bruto_ml,torta_g,aceite_filtrado_ml,personas,notas
+L20261015-01,2026-10-15,coco,,,,5,,2.945,736,,,,,,,,,,,,,,,Prueba de calibración de la prensa. Pesos con bowl (cocos) y jarra (agua): verificar si se descontó la tara
