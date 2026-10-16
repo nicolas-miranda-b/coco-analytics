@@ -1,8 +1,8 @@
 # Registro de producción
 
-Una fila por lote en `lotes.csv` y una fila por coco en `cocos.csv` (opcional, cuando se pesa coco por coco). Celdas vacías = no medido; no se inventa ni se promedia.
+Tres tablas: `lotes.csv` (una fila por lote de cocos, de la recepción a la pulpa), `prensados.csv` (una fila por corrida de prensa; puede juntar varios lotes, unidos por `prensado_id`) y `cocos.csv` (opcional, una fila por coco). Celdas vacías = no medido; no se inventa ni se promedia.
 
-**ID de lote:** `L` + fecha + número del día (`L20261015-01`).
+**IDs:** lote `L` + fecha + número del día (`L20261015-01`); prensado `P` + fecha + número (`P20261016-01`).
 
 ## Qué se mide, en el orden del proceso
 | Etapa | Columnas |
@@ -12,9 +12,9 @@ Una fila por lote en `lotes.csv` y una fila por coco en `cocos.csv` (opcional, c
 | Despulpar | `peso_pulpa_kg` (pulpa blanca, sin cáscara), `min_despulpar` |
 | Triturar / rallar | `min_triturar` |
 | Secado (si se seca antes de prensar) | `peso_pulpa_seca_kg`, `secado_metodo`, `secado_temp_c`, `secado_min` |
-| Prensado | `min_prensar`, `temp_max_aceite_c`, `aceite_bruto_ml`, `torta_g` |
-| Decantado 24 h y filtrado | `aceite_filtrado_ml` |
-| General | `personas`, `notas` |
+| General del lote | `personas`, `prensado_id`, `notas` |
+| Prensado (`prensados.csv`) | `lotes`, `n_cocos`, `peso_pulpa_kg`, `min_prensar`, `temp_max_aceite_c`, `aceite_bruto_ml`, `torta_g` |
+| Decantado 24 h y filtrado (`prensados.csv`) | `aceite_filtrado_ml` |
 
 ## Indicadores que salen de aquí
 - Cocos por litro (meta ≤ 15) = `n_cocos` / `aceite_filtrado_ml` × 1000
