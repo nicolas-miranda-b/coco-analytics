@@ -1,2 +1,2 @@
 prensado_id,fecha,lotes,n_cocos,peso_pulpa_kg,peso_pulpa_seca_kg,secado_metodo,secado_temp_c,secado_min,min_prensado,temp_max_aceite_c,leche_g,aceite_bruto_ml,torta_g,aceite_filtrado_ml,notas
-P20261016-01,2026-10-16,L20261015-01;L20261015-02,10,1.717,0.787,,,,,,,,,,Primer prensado de calibración: dos lotes de 5 cocos prensados juntos
+P20261016-01,2026-10-16,L20261015-01;L20261015-02,10,1.717,0.787,,,,,,,,,,"Primer prensado de calibración: dos lotes de 5 cocos prensados juntos. 17/10: tras decantar se separaron fases; fase superior retirada = 363 g (verificar tara del bowl), blanca lechosa y con espuma al derretir en baño maría tibio: es crema emulsionada, todavía no aceite. Pendiente: romper la emulsión y pesar el aceite transparente"
