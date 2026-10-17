@@ -11,8 +11,8 @@ Tres tablas: `lotes.csv` (una fila por lote de cocos, de la recepción a la pulp
 | Abrir y drenar | `agua_g` (pesada en balanza), `min_abrir_drenar` |
 | Despulpar | `peso_pulpa_kg` (pulpa blanca, sin cáscara), `min_despulpar` |
 | Triturar / rallar | `min_triturar` |
-| Secado (si se seca antes de prensar) | `peso_pulpa_seca_kg`, `secado_metodo`, `secado_temp_c`, `secado_min` |
 | General del lote | `personas`, `prensado_id`, `notas` |
+| Secado (`prensados.csv`, se seca la pulpa ya juntada) | `peso_pulpa_seca_kg`, `secado_metodo`, `secado_temp_c`, `secado_min` |
 | Prensado (`prensados.csv`) | `lotes`, `n_cocos`, `peso_pulpa_kg`, `min_prensado`, `temp_max_aceite_c`, `leche_g` (lo que sale de la prensa hidráulica al prensar pulpa fresca: emulsión de aceite y agua), `aceite_bruto_ml` (si sale aceite directo, con pulpa seca), `torta_g` |
 | Decantado 24 h y filtrado (`prensados.csv`) | `aceite_filtrado_ml` (el aceite separado de la leche, ya filtrado) |
 
@@ -23,4 +23,5 @@ Prensa: hidráulica de 20 t con jaula perforada de acero inoxidable.
 - ml de aceite por coco y % de aceite sobre pulpa (densidad del aceite ≈ 0,92 g/ml)
 - Agua de coco por coco (subproducto vendible)
 - Minutos por litro (mano de obra) y costo de coco por litro
+- Pulpa seca / pulpa fresca (agua evaporada en el secado)
 - Merma del filtrado = 1 − filtrado / bruto

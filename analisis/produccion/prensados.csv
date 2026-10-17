@@ -1,2 +1,2 @@
-prensado_id,fecha,lotes,n_cocos,peso_pulpa_kg,min_prensado,temp_max_aceite_c,leche_g,aceite_bruto_ml,torta_g,aceite_filtrado_ml,notas
-P20261016-01,2026-10-16,L20261015-01;L20261015-02,10,1.717,,,,,,,Primer prensado de calibración: dos lotes de 5 cocos prensados juntos
+prensado_id,fecha,lotes,n_cocos,peso_pulpa_kg,peso_pulpa_seca_kg,secado_metodo,secado_temp_c,secado_min,min_prensado,temp_max_aceite_c,leche_g,aceite_bruto_ml,torta_g,aceite_filtrado_ml,notas
+P20261016-01,2026-10-16,L20261015-01;L20261015-02,10,1.717,0.787,,,,,,,,,,Primer prensado de calibración: dos lotes de 5 cocos prensados juntos
