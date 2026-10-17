@@ -13,7 +13,7 @@ Tres tablas: `lotes.csv` (una fila por lote de cocos, de la recepción a la pulp
 | Triturar / rallar | `min_triturar` |
 | General del lote | `personas`, `prensado_id`, `notas` |
 | Secado (`prensados.csv`, se seca la pulpa ya juntada) | `peso_pulpa_seca_kg`, `secado_metodo`, `secado_temp_c`, `secado_min` |
-| Prensado (`prensados.csv`) | `lotes`, `metodo` (`seco`: pulpa secada y prensada; `húmedo-fermentación`: pulpa remojada, leche fermentada y decantada), `n_cocos`, `peso_pulpa_kg`, `min_prensado`, `temp_max_aceite_c`, `leche_g` (lo que sale de la prensa hidráulica al prensar pulpa fresca: emulsión de aceite y agua), `aceite_bruto_ml` (si sale aceite directo, con pulpa seca), `torta_g` |
+| Prensado (`prensados.csv`) | `lotes`, `metodo`, `agua_agregada_ml` (agua sumada a la pulpa antes de prensar) (`seco`: pulpa secada y prensada; `húmedo-fermentación`: pulpa remojada, leche fermentada y decantada), `n_cocos`, `peso_pulpa_kg`, `min_prensado`, `temp_max_aceite_c`, `leche_g` (lo que sale de la prensa hidráulica al prensar pulpa fresca: emulsión de aceite y agua), `aceite_bruto_ml` (si sale aceite directo, con pulpa seca), `torta_g` |
 | Decantado 24 h y filtrado (`prensados.csv`) | `aceite_filtrado_ml` (el aceite separado de la leche, ya filtrado) |
 
 Prensa: hidráulica de 20 t con jaula perforada de acero inoxidable.
@@ -23,5 +23,5 @@ Prensa: hidráulica de 20 t con jaula perforada de acero inoxidable.
 - ml de aceite por coco y % de aceite sobre pulpa (densidad del aceite ≈ 0,92 g/ml)
 - Agua de coco por coco (subproducto vendible)
 - Minutos por litro (mano de obra) y costo de coco por litro
-- Pulpa seca / pulpa fresca (agua evaporada en el secado)
+- Leche extraída ≈ pulpa + agua agregada − torta
 - Merma del filtrado = 1 − filtrado / bruto
