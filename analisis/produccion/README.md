@@ -4,10 +4,17 @@ Tres tablas: `lotes.csv` (una fila por lote de cocos, de la recepción a la pulp
 
 **IDs:** lote `L` + fecha + número del día (`L20261015-01`); prensado `P` + fecha + número (`P20261016-01`).
 
+## Recepción de cocos (según APCC y manual FAO de VCO, en el Drive)
+- Solo cocos **completamente maduros: 12–13 meses desde la polinización**. Señales: cáscara y estopa marrones (no verdes) y que suene el agua al sacudirlos.
+- Rechazar cocos **germinados o con haustorio** (la esponja blanca interna): desde que se forma, baja el contenido de aceite.
+- Procesar **dentro de los 7 días desde la cosecha**; no dejarlos al sol. Anotar `fecha_cosecha` cuando el proveedor la sepa.
+- La fermentación es muy sensible a la madurez: el coco inmaduro tiene más proteína y el aceite cuesta más en separarse.
+- Fermentación (FAO): 35–40 °C, 16–24 h, recipiente tapado con tela o tapa suelta, sin restos de jabón. Segunda extracción: torta y agua 2:1, volver a prensar y mezclar las dos leches.
+
 ## Qué se mide, en el orden del proceso
 | Etapa | Columnas |
 | --- | --- |
-| Recepción | `origen_cocos`, `proveedor`, `precio_bs_coco`, `n_cocos`, `n_cocos_malos`, `peso_cocos_kg` (enteros, sin tara) |
+| Recepción | `origen_cocos`, `proveedor`, `fecha_cosecha`, `precio_bs_coco`, `n_cocos`, `n_cocos_malos`, `peso_cocos_kg` (enteros, sin tara) |
 | Abrir y drenar | `agua_g` (pesada en balanza), `min_abrir_drenar` |
 | Despulpar | `peso_pulpa_kg` (pulpa blanca, sin cáscara), `min_despulpar` |
 | Triturar / rallar | `min_triturar` |
