@@ -21,7 +21,8 @@ Tres tablas: `lotes.csv` (una fila por lote de cocos, de la recepción a la pulp
 | General del lote | `personas`, `prensado_id`, `notas` |
 | Secado (`prensados.csv`, se seca la pulpa ya juntada) | `peso_pulpa_seca_kg`, `secado_metodo`, `secado_temp_c`, `secado_min` |
 | Prensado (`prensados.csv`) | `lotes`, `metodo`, `agua_agregada_ml` (agua sumada a la pulpa antes de prensar) (`seco`: pulpa secada y prensada; `húmedo-fermentación`: pulpa remojada, leche fermentada y decantada), `n_cocos`, `peso_pulpa_kg`, `min_prensado`, `temp_max_aceite_c`, `leche_g` (lo que sale de la prensa hidráulica al prensar pulpa fresca: emulsión de aceite y agua), `aceite_bruto_ml` (si sale aceite directo, con pulpa seca), `torta_g` |
-| Decantado 24 h y filtrado (`prensados.csv`) | `aceite_filtrado_ml` (el aceite separado de la leche, ya filtrado) |
+| Fermentación (`prensados.csv`) | `ferm_inicio`, `ferm_fin` (fecha y hora), `ferm_lugar` |
+| Decantado y filtrado (`prensados.csv`) | `aceite_filtrado_ml` (el aceite separado de la leche, ya filtrado) |
 
 Prensa: hidráulica de 20 t con jaula perforada de acero inoxidable.
 
