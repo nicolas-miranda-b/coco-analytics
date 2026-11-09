@@ -14,6 +14,7 @@ Análisis de datos del emprendimiento de aceite de coco. El primer estudio es un
 | [`04_demanda_oferta_local.ipynb`](04_demanda_oferta_local.ipynb) | Demanda (embudo de mercado direccionable, ciudades) y oferta local de coco (mapa real: **Ichilo/Warnes, no Chapare**), con las correcciones de la investigación jul-2026. |
 | [`campo/`](campo/) | **Kit de misión de campo**: checklist + plantillas CSV para relevar precio del coco, rendimiento de prensa y precios de góndola. |
 | [`legal/checklist_etiqueta.md`](legal/checklist_etiqueta.md) | Checklist de etiqueta NB 314001 + SENASAG (qué debe decir tu etiqueta para aprobar a la primera). |
+| [`marketing/estrategia_digital_benchmark.md`](marketing/estrategia_digital_benchmark.md) | **Estrategia digital** (nov-2026): benchmark de 12 marcas, redes en Bolivia, costos de clic a WhatsApp, evidencia sobre IA en contenido, presupuesto, calendario de 8 semanas y métricas. |
 | `datos/` | Datasets curados en CSV, cada uno con su columna de **fuente**. |
 | `figuras/` | Gráficos exportados por el notebook (PNG). |
 
