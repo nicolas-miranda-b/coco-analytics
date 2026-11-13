@@ -37,7 +37,7 @@ def main():
             "anio": int(r.GESTION_CLEAN), "tipo": r.tipo,
             "origen": str(r.DESPAI).title().replace("Ð", "Ñ"),
             "depto": str(r.DESDEPTO).title(),
-            "cif": round(float(r.PAG_NUM or 0)), "fob": round(float(r.FOB_NUM or 0)),
+            "cif": round(float(r.FRO_NUM or 0)), "fob": round(float(r.FOB_NUM or 0)),
             "kg": round(float(r.kg)),
         }
         for r in ac.itertuples()
@@ -45,7 +45,7 @@ def main():
 
     # --- Cocos secos: agregado año × origen ---
     co = micro[micro["NANDINA_CLEAN"].isin(COCOS)]
-    cg = co.groupby(["GESTION_CLEAN", "DESPAI"]).agg(cif=("PAG_NUM", "sum"), kg=("kg", "sum")).reset_index()
+    cg = co.groupby(["GESTION_CLEAN", "DESPAI"]).agg(cif=("FRO_NUM", "sum"), kg=("kg", "sum")).reset_index()
     cocos = [
         {"anio": int(r.GESTION_CLEAN), "origen": str(r.DESPAI).title(),
          "cif": round(float(r.cif)), "kg": round(float(r.kg))}
