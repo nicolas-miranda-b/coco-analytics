@@ -24,7 +24,7 @@ El aceite de coco en Bolivia es un **producto premium de nicho** (importa **US$ 
 | Dimensión | Hallazgo (microdato oficial INE) |
 |---|---|
 | Tamaño | Nicho: **US$ 115–220 mil CIF y 40–100 t/año** recientes; pico atípico 2023 (US$ 706 mil). **Volumen creciendo**: récord ~104 t en 2025. Refinado = ~88 %. |
-| Origen importado | **Sri Lanka** (volumen; contenedores a ~$0,5–1,3/kg que no son extra virgen y lotes de $2,8–4,5/kg), **Malasia** (atípico ~$32/kg, explicó el pico 2023), **Países Bajos/Alemania** (re-export UE). **Ecuador ≈ US$ 16**: el dato espejo de $765k era palmiste, no coco. |
+| Origen importado | **Sri Lanka** (volumen; contenedores a ~$0,5–1,3/kg: aceite convencional para industria, no extra virgen y lotes de $2,8–4,5/kg), **Malasia** (atípico ~$32/kg, explicó el pico 2023), **Países Bajos/Alemania** (re-export UE). **Ecuador ≈ US$ 16**: el dato espejo de $765k era palmiste, no coco. |
 | Dónde está el mercado | **Santa Cruz ~65 %**, Cochabamba ~25 %, La Paz ~7 % del valor importado. |
 | Importadores directos | **DREAMCO SRL** (~25 % de los envíos), **ANTORVA S.R.L** (~11 %), **HANSA LTDA** (~9 %) — registros aduaneros vía Volza. |
 | Competencia | Marcas **locales/artesanales**: Becoco, Madre Tierra, Dream Cos, Viasana. 💡 DREAMCO SRL ≈ marca "Dream Cos": el principal competidor "local" probablemente **importa**, no produce → el posicionamiento "coco boliviano" está **vacante**. |
